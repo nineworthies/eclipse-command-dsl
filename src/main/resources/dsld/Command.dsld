@@ -1,0 +1,118 @@
+package dsld;
+
+import org.codehaus.groovy.ast.expr.ClosureExpression
+
+def enclosedBy(String name) {
+	return enclosingCallName(name) & enclosingClosure()
+}
+
+// can't use 'sourceFolderOfCurrentFile("src/main/scripts") | sourceFolderOfCurrentFile("src/test/scripts")
+// until https://jira.codehaus.org/browse/GRECLIPSE-1609 is fixed
+def directorScript = enclosingScript() & sourceFolderOfCurrentFile("src/main/scripts")
+
+def directorCall = enclosedBy("director")
+
+def installCall = enclosedBy("install")
+
+def uninstallCall = enclosedBy("uninstall")
+
+def iuCall = enclosedBy("installableUnit")
+
+contribute(directorScript & bind(enclosingClosures: enclosingClosure())) {
+	log "contribution for pointcut 'directorScript & enclosingClosure()'"
+	log "${enclosingClosures.size()} closure(s) enclose the current location:"
+	enclosingClosures.each { ClosureExpression enclosingClosure ->
+		log "${enclosingClosure.getCode().text}"
+	}
+}
+
+contribute(directorScript) {
+	log "contribution for pointcut 'directorScript'"
+	property(
+		name: "config",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
+		type: Map)
+}
+
+contribute(directorScript & ~enclosingClosure()) {
+	log "contribution for pointcut 'directorScript & ~enclosingClosure()'"
+	method(
+		name: "include",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
+		params: [argsPath: String],
+		noParens: true)
+	method(
+		name: "eclipsec",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
+		params: [path: String],
+		noParens: true)
+	method(
+		name: "consolelog",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments")
+	method(
+		name: "debug",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments")
+	method(
+		name: "nosplash",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments")
+	method(
+		name: "director",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
+		params: [args: Closure])
+}
+
+contribute(directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCall) {
+	log "contribution for pointcut 'directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
+	method(
+		name: "destination",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
+		params: [path: String],
+		noParens: true)
+	method(
+		name: "repository",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
+		params: [url: String],
+		noParens: true)
+	method(
+		name: "install",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
+		params: [args: Closure])
+	method(
+		name: "uninstall",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
+		params: [args: Closure])
+}
+
+contribute(directorScript & (installCall | uninstallCall) & ~iuCall) {
+	log "contribution for pointcut 'directorScript & installCall & ~iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.InstallArgumentsHandler")
+	method(
+		name: "installableUnitsFrom",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallArgumentsHandler",
+		params: [argsPath: String],
+		noParens: true)
+}
+
+contribute(directorScript & (installCall | uninstallCall | directorCall) & ~iuCall) {
+	log "contribution for pointcut 'directorScript & (installCall | directorCall) & ~iuCall'"
+	method(
+		name: "installableUnit",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsHandler",
+		params: [args: Closure])
+}
+
+contribute(directorScript & iuCall) {
+	log "contribution for pointcut 'directorScript & iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.InstallableUnitArguments")
+	method(
+		name: "id",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitArguments",
+		params: [id: String],
+		noParens: true)
+	method(
+		name: "version",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitArguments",
+		params: [id: String],
+		noParens: true)
+}

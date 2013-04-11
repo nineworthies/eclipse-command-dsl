@@ -1,0 +1,21 @@
+apply plugin: "groovy"
+apply plugin: "maven"
+apply plugin: "application"
+
+version = "0.1.0-SNAPSHOT"
+group = "org.nineworthies.eclipse"
+
+mainClassName = "org.nineworthies.eclipse.command.EclipseCommand"
+applicationDistribution.from("src/main/scripts") {
+	include "eclipse-command-dsl.groovy"
+	into "bin"
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile "org.codehaus.groovy:groovy-all:2.1.1"
+	testCompile "junit:junit:4.11"
+}
