@@ -105,11 +105,11 @@ class DirectorArguments implements DirectorArgumentsAccessor,
 	}
 	
 	void appendArgs(Appendable command) {
-		command << " -destination"
-		command << (destination.contains(" ") ? / "$destination"/ : " $destination")
-		if (operation) {
-			operation.appendArgs(command, this)
+		if (destination) {
+			command << " -destination"
+			command << (destination.contains(" ") ? / "$destination"/ : " $destination")
 		}
+		operation?.appendArgs(command, this)
 	}
 	
 	Properties getConfig() {

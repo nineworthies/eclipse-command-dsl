@@ -27,18 +27,13 @@ class EclipseArguments implements EclipseArgumentsAccessor {
 	}
 	
 	static EclipseArguments createFrom(File argsFile) {
-		def binding = new Binding()
+
 		def eclipseArgs = new EclipseArguments(argsFile)
-		binding.config = eclipseArgs.config
-		binding.configFrom = { eclipseArgs.configFrom(it) }
-		binding.include = { eclipseArgs.include(it) }
-		binding.eclipsec = { eclipseArgs.eclipsec(it) }
-		binding.consolelog = { eclipseArgs.consolelog() }
-		binding.debug = { eclipseArgs.debug() }
-		binding.nosplash = { eclipseArgs.nosplash() }
-		binding.director = { eclipseArgs.director(it) }
-		def shell = new GroovyShell(binding)
-		shell.evaluate(argsFile)
+		// groovy allegedly tries to guess the encoding of argsFile...
+		Closure args = new GroovyShell().evaluate("{->$argsFile.text}")
+		args.setDelegate(eclipseArgs)
+		args.setResolveStrategy(Closure.DELEGATE_ONLY)
+		args.call()
 		return eclipseArgs
 	}
 	

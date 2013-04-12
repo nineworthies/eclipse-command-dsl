@@ -58,6 +58,22 @@ class EclipseArgumentsTest {
 			" -destination /eclipse/install/path"
 		assertEquals(expected, args.asCommand())
 	}
+
+	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasNoOperationAndNoDestination() {
+		
+		def args = EclipseArguments.createFrom {
+			director {
+				repository "http://an.update/site"
+				installableUnit {
+					id "a.feature.group"
+				}
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director"
+		assertEquals(expected, args.asCommand())
+	}
 	
 	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnit() {
