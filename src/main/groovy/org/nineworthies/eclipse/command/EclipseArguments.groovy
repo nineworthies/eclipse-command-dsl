@@ -6,11 +6,9 @@ import org.nineworthies.eclipse.command.director.DirectorArgumentsAccessor;
 import groovy.lang.Closure;
 
 
-class EclipseArguments implements EclipseArgumentsAccessor {
+class EclipseArguments extends ConfigurableArguments implements EclipseArgumentsAccessor {
 
 	private File argsFile
-	
-	private Properties config = [:]
 	
 	private File eclipsec = new File("eclipsec")
 	
@@ -62,11 +60,7 @@ class EclipseArguments implements EclipseArgumentsAccessor {
 		} else {
 			configFile = new File(configPath)
 		}
-		def configProps = new Properties()
-		configFile.withInputStream {
-			stream -> configProps.load(stream)
-		}
-		this.config.putAll(configProps)
+		mergeConfigFrom(configFile)
 	}
 	
 	void include(String argsPath) {
@@ -134,10 +128,6 @@ class EclipseArguments implements EclipseArgumentsAccessor {
 		} else {
 			directorArgs.mergeArgumentsFrom(otherDirectorArgs)
 		}
-	}
-	
-	Properties getConfig() {
-		return config
 	}
 	
 	DirectorArguments getDirectorArguments() {

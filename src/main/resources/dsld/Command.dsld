@@ -26,16 +26,13 @@ contribute(directorScript & bind(enclosingClosures: enclosingClosure())) {
 	}
 }
 
-contribute(directorScript) {
-	log "contribution for pointcut 'directorScript'"
-	property(
-		name: "config",
-		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
-		type: Map)
-}
-
 contribute(directorScript & ~enclosingClosure()) {
 	log "contribution for pointcut 'directorScript & ~enclosingClosure()'"
+	method(
+		name: "configFrom",
+		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
+		params: [configPath: String],
+		noParens: true)
 	method(
 		name: "include",
 		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",

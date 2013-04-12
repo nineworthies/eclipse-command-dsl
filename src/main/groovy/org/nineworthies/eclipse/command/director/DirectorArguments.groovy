@@ -4,16 +4,17 @@ import java.util.Map;
 
 import groovy.lang.Closure;
 
+import org.nineworthies.eclipse.command.ConfigurableArguments;
 import org.nineworthies.eclipse.command.EclipseArguments
 
 
-class DirectorArguments implements DirectorArgumentsAccessor, 
-	DirectorArgumentsHandler, InstallableUnitsHandler {
+class DirectorArguments extends ConfigurableArguments 
+	implements DirectorArgumentsAccessor, DirectorArgumentsHandler, InstallableUnitsHandler {
 	
 	static DirectorArguments createFrom(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = DirectorArguments)
 		Closure args,
-		Properties config = null,
+		ConfigObject config = null,
 		String basePath = null) {
 		
 		def directorArgs = new DirectorArguments(config, basePath)
@@ -22,8 +23,6 @@ class DirectorArguments implements DirectorArgumentsAccessor,
 		args.call()
 		return directorArgs
 	}
-
-	private Properties config = [:]
 	
 	private String basePath
 	
@@ -37,10 +36,8 @@ class DirectorArguments implements DirectorArgumentsAccessor,
 	
 	DirectorArguments() { }
 	
-	DirectorArguments(Properties config, String basePath) {
-		if (config) {
-			this.config.putAll(config)
-		}
+	DirectorArguments(ConfigObject config, String basePath) {
+		super(config)
 		this.basePath = basePath
 	}
 	
@@ -110,10 +107,6 @@ class DirectorArguments implements DirectorArgumentsAccessor,
 			command << (destination.contains(" ") ? / "$destination"/ : " $destination")
 		}
 		operation?.appendArgs(command, this)
-	}
-	
-	Properties getConfig() {
-		return config
 	}
 	
 	String getDestination() {

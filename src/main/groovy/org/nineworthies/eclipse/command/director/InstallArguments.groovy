@@ -1,17 +1,15 @@
 package org.nineworthies.eclipse.command.director
 
-import java.util.Properties;
-
-import groovy.lang.Closure;
-
+import org.nineworthies.eclipse.command.ConfigurableArguments;
 import org.nineworthies.eclipse.command.EclipseArguments
 
-class InstallArguments implements InstallArgumentsHandler, InstallableUnitsHandler {
+class InstallArguments extends ConfigurableArguments 
+	implements InstallArgumentsHandler, InstallableUnitsHandler {
 	
 	static InstallArguments createFrom(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure argsClosure,
-		Properties config = null,
+		ConfigObject config = null,
 		String basePath = null) {
 		
 		def args = new InstallArguments(config, basePath)
@@ -22,8 +20,6 @@ class InstallArguments implements InstallArgumentsHandler, InstallableUnitsHandl
 	}
 
 	private DirectorArguments directorArgs
-
-	private Properties config = [:]
 	
 	private String basePath
 	
@@ -31,10 +27,8 @@ class InstallArguments implements InstallArgumentsHandler, InstallableUnitsHandl
 		this.directorArgs = new DirectorArguments()
 	}
 	
-	InstallArguments(Properties config, String basePath) {
-		if (config) {
-			this.config.putAll(config)
-		}
+	InstallArguments(ConfigObject config, String basePath) {
+		super(config)
 		this.directorArgs = new DirectorArguments(config, basePath)
 		this.basePath = basePath
 	}
@@ -55,9 +49,5 @@ class InstallArguments implements InstallArgumentsHandler, InstallableUnitsHandl
 	
 	List<InstallableUnitArgumentsAccessor> getInstallableUnits() {
 		return directorArgs.installableUnits
-	}
-	
-	Properties getConfig() {
-		return config
 	}
 }

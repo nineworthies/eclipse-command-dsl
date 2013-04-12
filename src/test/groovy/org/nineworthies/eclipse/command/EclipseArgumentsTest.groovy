@@ -303,9 +303,9 @@ class EclipseArgumentsTest {
 		def configFile = new File(getClass().getResource("/test_config.properties").toURI())
 		def args = EclipseArguments.createFrom {
 			configFrom configFile.getCanonicalPath()
-			eclipsec "${config['eclipse.home']}/eclipsec"
+			eclipsec "$eclipse.home/eclipsec"
 			director {
-				destination "${config['eclipse.home']}"
+				destination "$eclipse.home"
 			}
 		}
 		
