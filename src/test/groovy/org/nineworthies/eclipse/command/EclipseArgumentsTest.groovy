@@ -76,6 +76,43 @@ class EclipseArgumentsTest {
 	}
 	
 	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasListOperation() {
+		
+		def args = EclipseArguments.createFrom {
+			director {
+				repository "http://an.update/site"
+				list()
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+			" -repository http://an.update/site" +
+			" -list"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnits() {
+		
+		def args = EclipseArguments.createFrom {
+			director {
+				destination "/eclipse/install/path"
+				repository "http://an.update/site"
+				installableUnit {
+					id "a.feature.group"
+				}
+				installUnits()
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+			" -destination /eclipse/install/path" +
+			" -repository http://an.update/site" +
+			" -installIU a.feature.group"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnit() {
 		
 		def args = EclipseArguments.createFrom {
@@ -303,7 +340,7 @@ class EclipseArgumentsTest {
 		def configFile = new File(getClass().getResource("/test_config.properties").toURI())
 		def args = EclipseArguments.createFrom {
 			configFrom configFile.getCanonicalPath()
-			eclipsec "$eclipse.home/eclipsec"
+			eclipsec "$eclipse.command"
 			director {
 				destination "$eclipse.home"
 			}

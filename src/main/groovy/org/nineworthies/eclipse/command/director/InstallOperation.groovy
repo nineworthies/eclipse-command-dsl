@@ -7,13 +7,17 @@ import java.io.File;
 @Immutable
 class InstallOperation implements DirectorOperation {
 
+	boolean useDirectorUnits
+	
 	// FIXME this field was originally named 'args', but with that name
 	// the following error was seen at runtime:
 	// GroovyCastException: Cannot cast object 'xxx' with 
 	// class 'xxx' to class 'java.util.HashMap'
 	List<InstallableUnitArgumentsAccessor> units = []
-
+	
 	void appendArgs(Appendable command, DirectorArgumentsAccessor args) {
+		
+		def units = this.useDirectorUnits ? args.installableUnits : this.units
 		println("installing $units from $args.repositories to '$args.destination'")
 		args.repositories.each { url ->
 			if (url == args.repositories.first()) {
@@ -25,7 +29,6 @@ class InstallOperation implements DirectorOperation {
 			}
 		}
 		units.each { unit ->
-//			command << (index > 0 ? ", $installableUnit.id" : " -installIU $installableUnit.id")
 			if (unit == units.first()) {
 				command << (units.size() > 1 ? / -installIU "$unit.id/ : " -installIU $unit.id")
 			} else if (unit == units.last()) {

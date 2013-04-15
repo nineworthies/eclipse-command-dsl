@@ -14,26 +14,46 @@ class EclipseCommand {
 	
 	static void exec(String[] args, String callingType = "EclipseCommand") {
 
-		if (!(1..2).contains(args.length)) {
-			printUsageAndExit(callingType)
+		def cli = new CliBuilder(usage: "$callingType -s [-m <args>] [argspath]")
+		cli.with {
+			s "show the command"
+			m args: 1, argName: "args", "command arguments"
+		}
+		def opts = cli.parse(args)
+		if (!opts) {
+			System.exit(0)
+		}
+		if (!opts.arguments() && !opts.m) {
+			cli.usage()
+			System.exit(0)
 		}
 		
-		def eclipseArgs = EclipseArguments.createFrom(args[0])
+		def eclipseArgs
+		if (opts.arguments()) {
+			def invalidOpts = opts.arguments().findAll {
+				it.startsWith("-")
+			}
+			if (invalidOpts) {
+				cli.usage()
+				System.exit(0)
+			}
+			// FIXME second or subsequent arg files are ignored for now...
+			eclipseArgs = EclipseArguments.createFrom(opts.arguments().first())
+			if (opts.m) {
+				Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
+				eclipseArgs.mergeArgumentsFrom(EclipseArguments.createFrom(otherArgs))
+			}
+		} else {
+			Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
+			eclipseArgs = EclipseArguments.createFrom(otherArgs)
+		}
+
 		def command = createFrom(eclipseArgs)
-		if (args.length == 1) {
-			command.exec()
-			System.exit(0)
-		}
-		if (args[1].equals("-showCommand")) {
+		if (opts.s) {
 			command.show()
-			System.exit(0)
+		} else {
+			command.exec()
 		}
-		printUsageAndExit(callingType)
-	}
-	
-	static void printUsageAndExit(callingType) {
-		println "Usage: $callingType <script> -showCommand"
-		System.exit(0)
 	}
 	
 	static EclipseCommand createFrom(EclipseArguments args) {
@@ -49,13 +69,7 @@ class EclipseCommand {
 		def command = eclipseArgs.asCommand()
 		println "command to exec is '$command'"
 		def process = command.execute()
-//		process.consumeProcessOutput()
-		// http://stackoverflow.com/questions/6365451/is-eachline-sufficient-to-keep-a-process-from-blocking
-//		process.in.eachLine { line -> println "command output: $line" }
-//		process.err.eachLine { line -> System.err.println "command output: $line" }
-//		process.waitFor()
 		process.waitForProcessOutput(System.out, System.err)
-		
 		println "command return code: ${process.exitValue()}"
 	}
 }

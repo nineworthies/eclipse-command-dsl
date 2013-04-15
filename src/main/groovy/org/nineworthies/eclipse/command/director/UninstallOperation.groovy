@@ -7,12 +7,16 @@ import java.io.File;
 @Immutable
 class UninstallOperation implements DirectorOperation {
 
-	Collection<InstallableUnitArgumentsAccessor> installableUnits = []
+	boolean useDirectorUnits
+	
+	Collection<InstallableUnitArgumentsAccessor> units = []
 
 	void appendArgs(Appendable command, DirectorArgumentsAccessor args) {
-		println("uninstalling $installableUnits from '$args.destination'")
-		installableUnits.eachWithIndex { installableUnit, index ->
-			command << (index > 0 ? ", $installableUnit.id" : " -uninstallIU $installableUnit.id")
+		
+		def units = this.useDirectorUnits ? args.installableUnits : this.units
+		println("uninstalling $units from '$args.destination'")
+		units.eachWithIndex { unit, index ->
+			command << (index > 0 ? ", $unit.id" : " -uninstallIU $unit.id")
 		}
 	}
 }

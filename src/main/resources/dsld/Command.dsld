@@ -72,13 +72,22 @@ contribute(directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCa
 		params: [url: String],
 		noParens: true)
 	method(
+		name: "list",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
+	method(
 		name: "install",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
 		params: [args: Closure])
 	method(
+		name: "installUnits",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
+	method(
 		name: "uninstall",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
 		params: [args: Closure])
+	method(
+		name: "uninstallUnits",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")		
 }
 
 contribute(directorScript & (installCall | uninstallCall) & ~iuCall) {

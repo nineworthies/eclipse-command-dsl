@@ -8,5 +8,9 @@ interface DirectorArgumentsHandler {
 	
 	void install(Closure args)
 
+	void installUnits()
+	
 	void uninstall(Closure args)
+	
+	void uninstallUnits()
 }

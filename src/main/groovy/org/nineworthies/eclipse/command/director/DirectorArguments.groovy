@@ -60,6 +60,11 @@ class DirectorArguments extends ConfigurableArguments
 		installableUnits.add(iuArgs)
 	}
 	
+	// TODO support list arguments (i.e. iu's, p2 query) 
+	void list() {
+		operation = new ListOperation();
+	}
+	
 	// sets install operation with only the installable units in argsClosure
 	void install(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
@@ -71,10 +76,14 @@ class DirectorArguments extends ConfigurableArguments
 		} else {
 			installArgs = InstallArguments.createFrom(args, config)
 		}
-		operation = new InstallOperation(installArgs.installableUnits)
+		operation = new InstallOperation(units: installArgs.installableUnits)
 		mergeArgumentsFrom(installArgs.directorArguments)
 	}
 
+	void installUnits() {
+		operation = new InstallOperation(useDirectorUnits: true)
+	}
+	
 	void uninstall(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure args) {
@@ -85,8 +94,12 @@ class DirectorArguments extends ConfigurableArguments
 		} else {
 			installArgs = InstallArguments.createFrom(args, config)
 		}
-		operation = new UninstallOperation(installArgs.installableUnits)
+		operation = new UninstallOperation(units: installArgs.installableUnits)
 		mergeArgumentsFrom(installArgs.directorArguments)
+	}
+	
+	void uninstallUnits() {
+		operation = new UninstallOperation(useDirectorUnits: true)
 	}
 	
 	// TODO define the meaning of 'merge' here
@@ -113,12 +126,12 @@ class DirectorArguments extends ConfigurableArguments
 		return destination
 	}
 	
-	Iterable<String> getRepositories() {
-		return repositories
+	List<String> getRepositories() {
+		return repositories.asImmutable()
 	}
 	
 	List<InstallableUnitArgumentsAccessor> getInstallableUnits() {
-		return installableUnits
+		return installableUnits.asImmutable()
 	}
 	
 	DirectorOperation getOperation() {

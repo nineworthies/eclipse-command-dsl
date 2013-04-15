@@ -106,7 +106,8 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	// TODO define the meaning of 'merge' here
 	void mergeArgumentsFrom(EclipseArguments otherArgs) {
 		// FIXME use public access (EclipseArgumentsAccessor) not private!
-		if (otherArgs.eclipsec) {
+		config.merge(otherArgs.config)
+		if (otherArgs.eclipsec && !otherArgs.eclipsec.path.equals("eclipsec")) {
 			eclipsec = otherArgs.eclipsec
 		}
 		if (otherArgs.consolelog) {
