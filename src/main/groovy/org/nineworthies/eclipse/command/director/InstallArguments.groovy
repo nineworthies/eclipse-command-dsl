@@ -4,15 +4,20 @@ import org.nineworthies.eclipse.command.ConfigurableArguments
 
 class InstallArguments extends ConfigurableArguments 
 	implements InstallArgumentsHandler, UninstallArgumentsHandler {
-
+	
 	// FIXME can't use @Delegate with Eclipse until https://jira.codehaus.org/browse/GRECLIPSE-331 is fixed 
 	private RepositoryDelegate repositoryDelegate
 
 	private installableUnits = []
 	
-	InstallArguments(ConfigObject config = null, String basePath = null) {
+	InstallArguments(ConfigObject config = null, String basePath = null, RepositoryDelegate repositoryDelegate = null) {
 		super(config)
-		repositoryDelegate = new RepositoryDelegate(config, basePath)
+		if (repositoryDelegate) {
+			// FIXME should clone the specified delegate!
+			this.repositoryDelegate = repositoryDelegate
+		} else {
+			this.repositoryDelegate = new RepositoryDelegate(config, basePath)
+		}
 	}
 	
 	void unitsFromRepository(

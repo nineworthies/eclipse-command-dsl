@@ -115,6 +115,45 @@ class EclipseArgumentsTest {
 	}
 	
 	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasNamedRepositoryAndInstallOperationForAllUnits() {
+		
+		def args = EclipseArguments.createFrom {
+			director {
+				destination "/eclipse/install/path"
+				repositoryNamed "asite", "http://an.update/site"
+				unitsFromRepositoryNamed ("asite") {
+					installableUnit {
+						id "a.feature.group"
+					}
+				}
+				installUnits()
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+			" -destination /eclipse/install/path" +
+			" -repository http://an.update/site" +
+			" -installIU a.feature.group"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test(expected = RuntimeException)
+	void testCreateFromClosureWithDirectorApplicationThatHasUnitsFromNamedRepositoryButNameNotFound() {
+		
+		EclipseArguments.createFrom {
+			director {
+				destination "/eclipse/install/path"
+				repositoryNamed "asite", "http://an.update/site"
+				unitsFromRepositoryNamed ("does-not-exist") {
+					installableUnit {
+						id "a.feature.group"
+					}
+				}
+			}
+		}
+	}
+	
+	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnit() {
 		
 		def args = EclipseArguments.createFrom {
@@ -138,7 +177,6 @@ class EclipseArgumentsTest {
 	}
 
 	@Test
-	@Ignore("Named repositories don't work yet for nested context")
 	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnitFromNamedRepository() {
 		
 		def args = EclipseArguments.createFrom {

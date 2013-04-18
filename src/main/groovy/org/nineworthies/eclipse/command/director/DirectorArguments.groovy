@@ -58,7 +58,7 @@ class DirectorArguments extends ConfigurableArguments
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure installArgs) {
 		
-		def args = new InstallArguments(config, basePath)
+		def args = new InstallArguments(config, basePath, repositoryDelegate)
 		installArgs.setDelegate(args)
 		installArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		installArgs.call()
@@ -75,7 +75,7 @@ class DirectorArguments extends ConfigurableArguments
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure uninstallArgs) {
 		
-		def args = new InstallArguments(config, basePath)
+		def args = new InstallArguments(config, basePath, repositoryDelegate)
 		uninstallArgs.setDelegate(args)
 		uninstallArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		uninstallArgs.call()
