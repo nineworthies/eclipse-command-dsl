@@ -6,7 +6,7 @@ import org.nineworthies.eclipse.command.EclipseArguments
 @Immutable(knownImmutableClasses = [EclipseArguments, EclipseArgumentsAccessor])
 class EclipseCommand {
 	
-	EclipseArgumentsAccessor eclipseArgs;
+	final EclipseArgumentsAccessor eclipseArgs;
 	
 	static void main(String[] args) {
 		exec(args)
@@ -41,23 +41,19 @@ class EclipseCommand {
 			eclipseArgs = EclipseArguments.createFrom(opts.arguments().first())
 			if (opts.m) {
 				Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
-				eclipseArgs.mergeArgumentsFrom(EclipseArguments.createFrom(otherArgs))
+				eclipseArgs.merge(EclipseArguments.createFrom(otherArgs))
 			}
 		} else {
 			Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
 			eclipseArgs = EclipseArguments.createFrom(otherArgs)
 		}
 
-		def command = createFrom(eclipseArgs)
+		def command = new EclipseCommand(eclipseArgs)
 		if (opts.s) {
 			command.show()
 		} else {
 			command.exec()
 		}
-	}
-	
-	static EclipseCommand createFrom(EclipseArguments args) {
-		return new EclipseCommand(args)
 	}
 
 	void show() {

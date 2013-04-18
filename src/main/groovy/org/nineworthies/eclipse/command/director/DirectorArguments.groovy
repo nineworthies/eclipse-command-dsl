@@ -1,63 +1,51 @@
 package org.nineworthies.eclipse.command.director
 
-import java.util.Map;
-
-import groovy.lang.Closure;
-
-import org.nineworthies.eclipse.command.ConfigurableArguments;
-import org.nineworthies.eclipse.command.EclipseArguments
-
+import org.nineworthies.eclipse.command.ConfigurableArguments
 
 class DirectorArguments extends ConfigurableArguments 
-	implements DirectorArgumentsAccessor, DirectorArgumentsHandler, InstallableUnitsHandler {
+	implements DirectorArgumentsAccessor, DirectorArgumentsHandler {
 	
-	static DirectorArguments createFrom(
-		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = DirectorArguments)
-		Closure args,
-		ConfigObject config = null,
-		String basePath = null) {
-		
-		def directorArgs = new DirectorArguments(config, basePath)
-		args.setDelegate(directorArgs)
-		args.setResolveStrategy(Closure.DELEGATE_ONLY)
-		args.call()
-		return directorArgs
-	}
-	
-	private String basePath
+	final String basePath
 	
 	private String destination
-
-	private def repositories = []
 	
-	private def installableUnits = []
+	// FIXME can't use @Delegate with Eclipse until https://jira.codehaus.org/browse/GRECLIPSE-331 is fixed 
+	private RepositoryDelegate repositoryDelegate
 	
 	private DirectorOperation operation
 	
-	DirectorArguments() { }
-	
-	DirectorArguments(ConfigObject config, String basePath) {
+	DirectorArguments(ConfigObject config = null, String basePath = null) {
 		super(config)
 		this.basePath = basePath
+		repositoryDelegate = new RepositoryDelegate(config, basePath)
 	}
 	
 	void destination(String path) {
 		destination = path
 	}
-
+	
 	void repository(String url) {
-		repositories.add(url)
+		repositoryDelegate.addRepository(url)
 	}
 	
-	void installableUnit(
-		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallableUnitArguments)
-		Closure args) {
+	void repositoryNamed(String name, String url) {
+		repositoryDelegate.addRepository(name, url)
+	}
+	
+	void unitsFromRepository(
+		String url,
+		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = Repository)
+		Closure repositoryArgs) {
 		
-		def iuArgs = new InstallableUnitArguments()
-		args.setDelegate(iuArgs)
-		args.setResolveStrategy(Closure.DELEGATE_ONLY)
-		args.call()
-		installableUnits.add(iuArgs)
+		repositoryDelegate.unitsFromRepository(url, repositoryArgs)
+	}
+	
+	void unitsFromRepositoryNamed(
+		String name,
+		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = Repository)
+		Closure repositoryArgs) {
+		
+		repositoryDelegate.unitsFromRepositoryNamed(name, repositoryArgs)
 	}
 	
 	// TODO support list arguments (i.e. iu's, p2 query) 
@@ -65,37 +53,34 @@ class DirectorArguments extends ConfigurableArguments
 		operation = new ListOperation();
 	}
 	
-	// sets install operation with only the installable units in argsClosure
+	// sets install operation with only the enclosed installable units
 	void install(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
-		Closure args) {
+		Closure installArgs) {
 		
-		def installArgs
-		if (basePath) {
-			installArgs = InstallArguments.createFrom(args, config, basePath)
-		} else {
-			installArgs = InstallArguments.createFrom(args, config)
-		}
-		operation = new InstallOperation(units: installArgs.installableUnits)
-		mergeArgumentsFrom(installArgs.directorArguments)
+		def args = new InstallArguments(config, basePath)
+		installArgs.setDelegate(args)
+		installArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
+		installArgs.call()
+		operation = new InstallOperation(installableUnits: args.installableUnits)
+		args.repositories.each { repositoryDelegate.mergeRepository(it) }
 	}
 
 	void installUnits() {
 		operation = new InstallOperation(useDirectorUnits: true)
 	}
 	
+	// sets uninstall operation with only the enclosed installable units
 	void uninstall(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
-		Closure args) {
+		Closure uninstallArgs) {
 		
-		def installArgs
-		if (basePath) {
-			installArgs = InstallArguments.createFrom(args, config, basePath)
-		} else {
-			installArgs = InstallArguments.createFrom(args, config)
-		}
-		operation = new UninstallOperation(units: installArgs.installableUnits)
-		mergeArgumentsFrom(installArgs.directorArguments)
+		def args = new InstallArguments(config, basePath)
+		uninstallArgs.setDelegate(args)
+		uninstallArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
+		uninstallArgs.call()
+		operation = new UninstallOperation(installableUnits: args.installableUnits)
+		args.repositories.each { repositoryDelegate.mergeRepository(it) }
 	}
 	
 	void uninstallUnits() {
@@ -103,22 +88,17 @@ class DirectorArguments extends ConfigurableArguments
 	}
 	
 	// TODO define the meaning of 'merge' here
-	void mergeArgumentsFrom(DirectorArgumentsAccessor otherArgs) {
+	void merge(DirectorArgumentsAccessor otherArgs) {
 		if (otherArgs.destination) {
 			destination = otherArgs.destination
 		}
-		repositories.addAll(otherArgs.repositories)
-		installableUnits.addAll(otherArgs.installableUnits)
+		otherArgs.repositories.each { repositoryDelegate.mergeRepository(it) }
 		if (otherArgs.operation) {
 			operation = otherArgs.operation
 		}
 	}
 	
 	void appendArgs(Appendable command) {
-		if (destination) {
-			command << " -destination"
-			command << (destination.contains(" ") ? / "$destination"/ : " $destination")
-		}
 		operation?.appendArgs(command, this)
 	}
 	
@@ -126,12 +106,12 @@ class DirectorArguments extends ConfigurableArguments
 		return destination
 	}
 	
-	List<String> getRepositories() {
-		return repositories.asImmutable()
+	List<RepositoryAccessor> getRepositories() {
+		return repositoryDelegate.repositories
 	}
 	
-	List<InstallableUnitArgumentsAccessor> getInstallableUnits() {
-		return installableUnits.asImmutable()
+	List<InstallableUnitAccessor> getInstallableUnits() {
+		return repositoryDelegate.installableUnits
 	}
 	
 	DirectorOperation getOperation() {

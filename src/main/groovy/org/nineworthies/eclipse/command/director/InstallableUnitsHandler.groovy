@@ -1,9 +1,7 @@
 package org.nineworthies.eclipse.command.director;
 
-import groovy.lang.Closure;
+interface InstallableUnitsHandler {
 
-public interface InstallableUnitsHandler {
-
-	void installableUnit(Closure args);
+	void installableUnit(Closure installableUnitArgs);
 
 }

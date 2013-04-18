@@ -12,22 +12,24 @@ def directorScript = enclosingScript() & sourceFolderOfCurrentFile("src/main/scr
 
 def directorCall = enclosedBy("director")
 
+def unitsFromRepositoryCall = enclosedBy("unitsFromRepository") | enclosedBy("unitsFromRepositoryNamed")
+
 def installCall = enclosedBy("install")
 
 def uninstallCall = enclosedBy("uninstall")
 
 def iuCall = enclosedBy("installableUnit")
 
-contribute(directorScript & bind(enclosingClosures: enclosingClosure())) {
-	log "contribution for pointcut 'directorScript & enclosingClosure()'"
-	log "${enclosingClosures.size()} closure(s) enclose the current location:"
-	enclosingClosures.each { ClosureExpression enclosingClosure ->
-		log "${enclosingClosure.getCode().text}"
-	}
-}
+//contribute(directorScript & bind(enclosingClosures: enclosingClosure())) {
+//	log "contribution for pointcut 'directorScript & enclosingClosure()'"
+//	log "${enclosingClosures.size()} closure(s) enclose the current location:"
+//	enclosingClosures.each { ClosureExpression enclosingClosure ->
+//		log "${enclosingClosure.getCode().text}"
+//	}
+//}
 
 contribute(directorScript & ~enclosingClosure()) {
-	log "contribution for pointcut 'directorScript & ~enclosingClosure()'"
+	log "contribution for pointcut '~enclosingClosure()'"
 	method(
 		name: "configFrom",
 		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
@@ -58,8 +60,8 @@ contribute(directorScript & ~enclosingClosure()) {
 		params: [args: Closure])
 }
 
-contribute(directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCall) {
-	log "contribution for pointcut 'directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCall'"
+contribute(directorScript & directorCall & ~unitsFromRepositoryCall & ~installCall & ~uninstallCall & ~iuCall) {
+	log "contribution for pointcut 'directorCall & ~unitsFromRepositoryCall & ~installCall & ~uninstallCall & ~iuCall'"
 	setDelegateType("org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
 	method(
 		name: "destination",
@@ -72,53 +74,83 @@ contribute(directorScript & directorCall & ~installCall & ~uninstallCall & ~iuCa
 		params: [url: String],
 		noParens: true)
 	method(
+		name: "repositoryNamed",
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
+		namedParams: [name: String, url: String])
+	method(
 		name: "list",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
 	method(
 		name: "install",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
-		params: [args: Closure])
+		params: [installArgs: Closure])
 	method(
 		name: "installUnits",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
 	method(
 		name: "uninstall",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
-		params: [args: Closure])
+		params: [uninstallArgs: Closure])
 	method(
 		name: "uninstallUnits",
-		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")		
+		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
 }
 
-contribute(directorScript & (installCall | uninstallCall) & ~iuCall) {
-	log "contribution for pointcut 'directorScript & installCall & ~iuCall'"
-	setDelegateType("org.nineworthies.eclipse.command.director.InstallArgumentsHandler")
+contribute(directorScript & (directorCall | installCall) & ~uninstallCall & ~unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut '(directorCall | installCall) & ~uninstallCall & ~unitsFromRepositoryCall & ~iuCall'"
 	method(
-		name: "installableUnitsFrom",
-		declaringType: "org.nineworthies.eclipse.command.director.InstallArgumentsHandler",
+		name: "unitsFromRepository",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsFromRepositoryHandler",
+		params: [url: String, repositoryArgs: Closure])
+	method(
+		name: "unitsFromRepositoryNamed",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsFromRepositoryHandler",
+		params: [name: String, repositoryArgs: Closure])
+}
+
+contribute(directorScript & (installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut '(installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall'"
+	method(
+		name: "unitsFrom",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsFromArgumentsHandler",
 		params: [argsPath: String],
 		noParens: true)
 }
 
-contribute(directorScript & (installCall | uninstallCall | directorCall) & ~iuCall) {
-	log "contribution for pointcut 'directorScript & (installCall | directorCall) & ~iuCall'"
+contribute(directorScript & unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut 'unitsFromRepositoryCall & ~iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.InstallableUnitsHandler")
+}
+
+contribute(directorScript & installCall & ~unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut 'installCall & ~unitsFromRepositoryCall & ~iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.InstallArgumentsHandler")
+}
+
+contribute(directorScript & uninstallCall & ~unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut 'uninstallCall & ~unitsFromRepositoryCall & ~iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.UninstallArgumentsHandler")
+}
+
+contribute(directorScript & (uninstallCall | unitsFromRepositoryCall) & ~iuCall) {
+	log "contribution for pointcut '(uninstallCall | unitsFromRepositoryCall) & ~iuCall'"
 	method(
 		name: "installableUnit",
 		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsHandler",
-		params: [args: Closure])
+		params: [installableUnitArgs: Closure])
 }
 
 contribute(directorScript & iuCall) {
-	log "contribution for pointcut 'directorScript & iuCall'"
-	setDelegateType("org.nineworthies.eclipse.command.director.InstallableUnitArguments")
+	log "contribution for pointcut 'iuCall'"
+	setDelegateType("org.nineworthies.eclipse.command.director.InstallableUnit")
 	method(
 		name: "id",
-		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitArguments",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnit",
 		params: [id: String],
 		noParens: true)
 	method(
 		name: "version",
-		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitArguments",
+		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnit",
 		params: [id: String],
 		noParens: true)
 }

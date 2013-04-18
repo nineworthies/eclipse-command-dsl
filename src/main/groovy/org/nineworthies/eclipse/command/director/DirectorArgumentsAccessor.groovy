@@ -4,9 +4,9 @@ interface DirectorArgumentsAccessor {
 
 	String getDestination()
 	
-	List<String> getRepositories()
+	List<RepositoryAccessor> getRepositories()
 	
-	List<InstallableUnitArgumentsAccessor> getInstallableUnits()
+	List<InstallableUnitAccessor> getInstallableUnits()
 	
 	// FIXME not strictly an argument?
 	DirectorOperation getOperation()

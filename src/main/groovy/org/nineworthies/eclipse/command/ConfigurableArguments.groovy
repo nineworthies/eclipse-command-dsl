@@ -1,14 +1,10 @@
 package org.nineworthies.eclipse.command
 
-import groovy.util.ConfigObject;
-
 abstract class ConfigurableArguments {
 
-	protected ConfigObject config = new ConfigObject()
+	final ConfigObject config = new ConfigObject()
 	
-	ConfigurableArguments() { }
-	
-	ConfigurableArguments(ConfigObject config) {
+	ConfigurableArguments(ConfigObject config = null) {
 		if (config) {
 			this.config.merge(config)
 		}
@@ -24,5 +20,10 @@ abstract class ConfigurableArguments {
 			stream -> configProps.load(stream)
 		}
 		config.merge(new ConfigSlurper().parse(configProps))
+	}
+	
+	// override groovy generated getter for 'config' property
+	ConfigObject getConfig() {
+		config.clone()
 	}
 }

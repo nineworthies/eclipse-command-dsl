@@ -1,10 +1,7 @@
 package org.nineworthies.eclipse.command
 
-import org.nineworthies.eclipse.command.director.DirectorArguments;
-import org.nineworthies.eclipse.command.director.DirectorArgumentsAccessor;
-
-import groovy.lang.Closure;
-
+import org.nineworthies.eclipse.command.director.DirectorArguments
+import org.nineworthies.eclipse.command.director.DirectorArgumentsAccessor
 
 class EclipseArguments extends ConfigurableArguments implements EclipseArgumentsAccessor {
 
@@ -71,7 +68,7 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		} else {
 			otherArgs = EclipseArguments.createFrom(argsPath)
 		}
-		mergeArgumentsFrom(otherArgs)
+		merge(otherArgs)
 	}
 	
 	void eclipsec(String path) {
@@ -92,19 +89,17 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	
 	void director(
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = DirectorArguments) 
-		Closure args) {
+		Closure directorArgs) {
 		
-		def directorArgs
-		if (argsFile) {
-			directorArgs = DirectorArguments.createFrom(args, config, argsFile.getParent())
-		} else {
-			directorArgs = DirectorArguments.createFrom(args, config)
-		}
-		mergeDirectorArgumentsFrom(directorArgs)
+		def args = new DirectorArguments(config, argsFile?.getParent())
+		directorArgs.setDelegate(args)
+		directorArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
+		directorArgs.call()
+		mergeDirectorArguments(args)
 	}
 	
 	// TODO define the meaning of 'merge' here
-	void mergeArgumentsFrom(EclipseArguments otherArgs) {
+	void merge(EclipseArguments otherArgs) {
 		// FIXME use public access (EclipseArgumentsAccessor) not private!
 		config.merge(otherArgs.config)
 		if (otherArgs.eclipsec && !otherArgs.eclipsec.path.equals("eclipsec")) {
@@ -119,19 +114,19 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		if (otherArgs.nosplash) {
 			nosplash = otherArgs.nosplash
 		}
-		mergeDirectorArgumentsFrom(otherArgs.directorArguments)
+		mergeDirectorArguments(otherArgs.directorArguments)
 	}
 	
-	private void mergeDirectorArgumentsFrom(DirectorArguments otherDirectorArgs) {
+	private void mergeDirectorArguments(DirectorArguments otherDirectorArgs) {
 		if (!directorArgs) {
 			// hmmm... maybe should instantiate new args instead, and then call mergeArgumentsFrom(..)
 			directorArgs = otherDirectorArgs
 		} else {
-			directorArgs.mergeArgumentsFrom(otherDirectorArgs)
+			directorArgs.merge(otherDirectorArgs)
 		}
 	}
 	
-	DirectorArguments getDirectorArguments() {
+	DirectorArgumentsAccessor getDirectorArguments() {
 		return directorArgs
 	}
 	

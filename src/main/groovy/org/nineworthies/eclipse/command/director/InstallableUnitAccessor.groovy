@@ -1,6 +1,6 @@
 package org.nineworthies.eclipse.command.director
 
-interface InstallableUnitArgumentsAccessor {
+interface InstallableUnitAccessor {
 
 	String getId()
 	

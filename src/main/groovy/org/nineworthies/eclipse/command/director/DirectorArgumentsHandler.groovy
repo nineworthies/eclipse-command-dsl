@@ -1,16 +1,20 @@
 package org.nineworthies.eclipse.command.director
 
-interface DirectorArgumentsHandler {
+interface DirectorArgumentsHandler extends InstallableUnitsFromRepositoryHandler {
 	
 	void destination(String path)
 	
 	void repository(String url)
 	
-	void install(Closure args)
+	void repositoryNamed(String name, String url)
+	
+	void install(Closure installArgs)
 
 	void installUnits()
 	
-	void uninstall(Closure args)
+	void uninstall(Closure uninstallArgs)
 	
 	void uninstallUnits()
+	
+	void list()
 }

@@ -1,13 +1,9 @@
 package org.nineworthies.eclipse.command.director
 
-import org.codehaus.groovy.ast.expr.ClosureExpression
-import org.nineworthies.eclipse.command.director.InstallableUnitArguments;
-
-import groovy.lang.Closure
-import groovy.transform.ToString;
+import groovy.transform.ToString
 
 @ToString(includeFields = true, includePackage = false)
-class InstallableUnitArguments implements InstallableUnitArgumentsAccessor {
+class InstallableUnit implements InstallableUnitAccessor {
 
 	private String id
 	

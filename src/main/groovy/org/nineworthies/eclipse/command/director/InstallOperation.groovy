@@ -1,32 +1,27 @@
 package org.nineworthies.eclipse.command.director
 
-import groovy.transform.Immutable;
-
-import java.io.File;
+import groovy.transform.Immutable
 
 @Immutable
-class InstallOperation implements DirectorOperation {
+class InstallOperation extends DirectorOperation {
 
-	boolean useDirectorUnits
+	final boolean useDirectorUnits
 	
 	// FIXME this field was originally named 'args', but with that name
 	// the following error was seen at runtime:
 	// GroovyCastException: Cannot cast object 'xxx' with 
 	// class 'xxx' to class 'java.util.HashMap'
-	List<InstallableUnitArgumentsAccessor> units = []
+	final List<InstallableUnitAccessor> installableUnits = []
 	
-	void appendArgs(Appendable command, DirectorArgumentsAccessor args) {
+	void appendArgs(Appendable command, DirectorArgumentsAccessor directorArgs) {
 		
-		def units = this.useDirectorUnits ? args.installableUnits : this.units
-		println("installing $units from $args.repositories to '$args.destination'")
-		args.repositories.each { url ->
-			if (url == args.repositories.first()) {
-				command << (args.repositories.size() > 1 ? / -repository "$url/ : " -repository $url")
-			} else if (url == args.repositories.last()) {
-				command << (args.repositories.size() > 1 ? /, $url"/ : ", $url")
-			} else {
-				command << ", $url"
-			}
+		def units = this.useDirectorUnits ? directorArgs.installableUnits : this.installableUnits
+		println("installing $units from $directorArgs.repositories to '$directorArgs.destination'")
+		if (directorArgs.destination) {
+			appendDestination(command, directorArgs.destination)
+		}
+		if (directorArgs.repositories) {
+			appendRepositories(command, directorArgs.repositories)
 		}
 		units.each { unit ->
 			if (unit == units.first()) {

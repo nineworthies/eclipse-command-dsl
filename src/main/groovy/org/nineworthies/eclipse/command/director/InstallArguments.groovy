@@ -1,53 +1,61 @@
 package org.nineworthies.eclipse.command.director
 
-import org.nineworthies.eclipse.command.ConfigurableArguments;
-import org.nineworthies.eclipse.command.EclipseArguments
+import org.nineworthies.eclipse.command.ConfigurableArguments
 
 class InstallArguments extends ConfigurableArguments 
-	implements InstallArgumentsHandler, InstallableUnitsHandler {
-	
-	static InstallArguments createFrom(
-		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
-		Closure argsClosure,
-		ConfigObject config = null,
-		String basePath = null) {
-		
-		def args = new InstallArguments(config, basePath)
-		argsClosure.setDelegate(args)
-		argsClosure.setResolveStrategy(Closure.DELEGATE_ONLY)
-		argsClosure.call()
-		return args
-	}
+	implements InstallArgumentsHandler, UninstallArgumentsHandler {
 
-	private DirectorArguments directorArgs
+	// FIXME can't use @Delegate with Eclipse until https://jira.codehaus.org/browse/GRECLIPSE-331 is fixed 
+	private RepositoryDelegate repositoryDelegate
+
+	private installableUnits = []
 	
-	private String basePath
-	
-	InstallArguments() {
-		this.directorArgs = new DirectorArguments()
-	}
-	
-	InstallArguments(ConfigObject config, String basePath) {
+	InstallArguments(ConfigObject config = null, String basePath = null) {
 		super(config)
-		this.directorArgs = new DirectorArguments(config, basePath)
-		this.basePath = basePath
+		repositoryDelegate = new RepositoryDelegate(config, basePath)
 	}
 	
-	void installableUnitsFrom(String argsPath) {
-		def argsFile = new File((String) basePath, argsPath)
-		def args = EclipseArguments.createFrom(argsFile).getDirectorArguments()
-		directorArgs.mergeArgumentsFrom(args)
+	void unitsFromRepository(
+		String url,
+		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = Repository)
+		Closure repositoryArgs) {
+		
+		repositoryDelegate.unitsFromRepository(url, repositoryArgs)
 	}
 	
-	void installableUnit(Closure args) {
-		directorArgs.installableUnit(args)
+	void unitsFromRepositoryNamed(
+		String name,
+		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = Repository)
+		Closure repositoryArgs) {
+
+		repositoryDelegate.unitsFromRepositoryNamed(name, repositoryArgs)
 	}
 	
-	DirectorArgumentsAccessor getDirectorArguments() {
-		return directorArgs
+	void unitsFrom(String argsPath) {
+		repositoryDelegate.unitsFrom(argsPath)
 	}
 	
-	List<InstallableUnitArgumentsAccessor> getInstallableUnits() {
-		return directorArgs.installableUnits
+	// TODO effectively duplicates Repository.installableUnit(Closure)
+	// TODO only sensible for uninstall
+	void installableUnit(
+		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallableUnit)
+		Closure installableUnitArgs) {
+		
+		def installableUnit = new InstallableUnit()
+		installableUnitArgs.setDelegate(installableUnit)
+		installableUnitArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
+		installableUnitArgs.call()
+		installableUnits.add(installableUnit)
+	}
+	
+	List<RepositoryAccessor> getRepositories() {
+		return repositoryDelegate.repositories
+	}
+	
+	List<InstallableUnitAccessor> getInstallableUnits() {
+		def installableUnits = []
+		installableUnits.addAll(this.installableUnits)
+		installableUnits.addAll(repositoryDelegate.installableUnits)
+		return installableUnits.asImmutable()
 	}
 }
