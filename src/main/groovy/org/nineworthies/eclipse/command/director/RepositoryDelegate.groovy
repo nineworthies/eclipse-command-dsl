@@ -1,29 +1,33 @@
 package org.nineworthies.eclipse.command.director
 
-import groovy.transform.TupleConstructor
-
 import org.nineworthies.eclipse.command.ConfigurableArguments
 import org.nineworthies.eclipse.command.EclipseArguments
 
-@TupleConstructor(callSuper = true, includeSuperProperties = true)
 class RepositoryDelegate extends ConfigurableArguments 
 	implements InstallableUnitsFromRepositoryHandler, InstallableUnitsFromArgumentsHandler {
-
+	
+	final String basePath
+	
 	private nameToRepositoryUrlMapping = [:]
 	
 	private urlToRepositoryMapping = [:]
 	
-	final String basePath
-	
-	void addRepository(String url) {
-		if (!urlToRepositoryMapping.containsKey(url)) {
-			urlToRepositoryMapping[url] = new Repository(config, url)
-		}
+	RepositoryDelegate(ConfigObject config = null, String basePath = null, 
+		List repositories = null) {
+		
+		super(config)
+		this.basePath = basePath
+		repositories?.each { mergeRepository(it) }
 	}
 	
-	void addRepository(String name, String url) {
-		nameToRepositoryUrlMapping.put(name, url)
-		addRepository(url)
+	void addRepository(String url, String name = null) {
+		if (!urlToRepositoryMapping.containsKey(url)) {
+			urlToRepositoryMapping[url] = new Repository(config, url, name)
+		}
+		// TODO what if name is already mapped to a different url?
+		if (name) {
+			nameToRepositoryUrlMapping[name] = url
+		}
 	}
 	
 	void unitsFromRepository(String url, Closure repositoryArgs) {
@@ -32,7 +36,10 @@ class RepositoryDelegate extends ConfigurableArguments
 		repositoryArgs.setDelegate(repository)
 		repositoryArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		repositoryArgs.call()
-		mergeRepository(repository)
+		// if the repository has no units, do not merge
+		if (!repository.installableUnits.empty) {
+			mergeRepository(repository)
+		}
 	}
 	
 	void unitsFromRepositoryNamed(String name, Closure repositoryArgs) {
@@ -50,10 +57,15 @@ class RepositoryDelegate extends ConfigurableArguments
 	}
 	
 	void mergeRepository(RepositoryAccessor repository) {
+		
 		if (!urlToRepositoryMapping.containsKey(repository.url)) {
-			urlToRepositoryMapping[repository.url] = new Repository(config, repository.url)
+			urlToRepositoryMapping[repository.url] = new Repository(config, repository.url, repository.name)
 		}
 		urlToRepositoryMapping[repository.url].merge(repository)
+		// TODO what if name is already mapped to a different url?
+		if (repository.name) {
+			nameToRepositoryUrlMapping[repository.name] = repository.url
+		}
 	}
 	
 	List<RepositoryAccessor> getRepositories() {

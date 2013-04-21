@@ -14,10 +14,12 @@ class DirectorArguments extends ConfigurableArguments
 	
 	private DirectorOperation operation
 	
-	DirectorArguments(ConfigObject config = null, String basePath = null) {
+	DirectorArguments(ConfigObject config = null, String basePath = null,
+		List repositories = null) {
+		
 		super(config)
 		this.basePath = basePath
-		repositoryDelegate = new RepositoryDelegate(config, basePath)
+		repositoryDelegate = new RepositoryDelegate(config, basePath, repositories)
 	}
 	
 	void destination(String path) {
@@ -29,7 +31,7 @@ class DirectorArguments extends ConfigurableArguments
 	}
 	
 	void repositoryNamed(String name, String url) {
-		repositoryDelegate.addRepository(name, url)
+		repositoryDelegate.addRepository(url, name)
 	}
 	
 	void unitsFromRepository(
@@ -58,16 +60,16 @@ class DirectorArguments extends ConfigurableArguments
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure installArgs) {
 		
-		def args = new InstallArguments(config, basePath, repositoryDelegate)
+		def args = new InstallArguments(config, basePath, 
+			repositoryDelegate.repositories.findAll { it.installableUnits.empty })
 		installArgs.setDelegate(args)
 		installArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		installArgs.call()
-		operation = new InstallOperation(installableUnits: args.installableUnits)
-		args.repositories.each { repositoryDelegate.mergeRepository(it) }
+		operation = new InstallOperation(repositories: args.repositories)
 	}
 
 	void installUnits() {
-		operation = new InstallOperation(useDirectorUnits: true)
+		operation = new InstallOperation(useDirectorRepositories: true)
 	}
 	
 	// sets uninstall operation with only the enclosed installable units
@@ -75,12 +77,11 @@ class DirectorArguments extends ConfigurableArguments
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = InstallArguments)
 		Closure uninstallArgs) {
 		
-		def args = new InstallArguments(config, basePath, repositoryDelegate)
+		def args = new InstallArguments(config, basePath)
 		uninstallArgs.setDelegate(args)
 		uninstallArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		uninstallArgs.call()
 		operation = new UninstallOperation(installableUnits: args.installableUnits)
-		args.repositories.each { repositoryDelegate.mergeRepository(it) }
 	}
 	
 	void uninstallUnits() {
@@ -108,10 +109,6 @@ class DirectorArguments extends ConfigurableArguments
 	
 	List<RepositoryAccessor> getRepositories() {
 		return repositoryDelegate.repositories
-	}
-	
-	List<InstallableUnitAccessor> getInstallableUnits() {
-		return repositoryDelegate.installableUnits
 	}
 	
 	DirectorOperation getOperation() {

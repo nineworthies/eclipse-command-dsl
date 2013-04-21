@@ -4,5 +4,7 @@ interface RepositoryAccessor {
 
 	String getUrl()
 	
+	String getName()
+	
 	List<InstallableUnitAccessor> getInstallableUnits()
 }

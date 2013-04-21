@@ -6,11 +6,13 @@ import groovy.transform.TupleConstructor
 import org.nineworthies.eclipse.command.ConfigurableArguments
 
 @TupleConstructor(callSuper = true, includeSuperProperties = true)
-@ToString(includeFields = true, includePackage = false, excludes = "installableUnits")
+@ToString(includePackage = false)
 class Repository extends ConfigurableArguments 
 	implements InstallableUnitsHandler, RepositoryAccessor {
 
 	final String url
+	
+	final String name
 	
 	private installableUnits = []
 	
@@ -25,8 +27,8 @@ class Repository extends ConfigurableArguments
 		installableUnits.add(installableUnit)
 	}
 	
-	void merge(RepositoryAccessor repository) {
-		installableUnits.addAll(repository.getInstallableUnits())
+	void merge(RepositoryAccessor otherRepository) {
+		installableUnits.addAll(otherRepository.getInstallableUnits())
 	}
 	
 	List<InstallableUnitAccessor> getInstallableUnits() {

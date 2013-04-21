@@ -91,7 +91,8 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		@DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = DirectorArguments) 
 		Closure directorArgs) {
 		
-		def args = new DirectorArguments(config, argsFile?.getParent())
+		def args = new DirectorArguments(config, argsFile?.getParent(), 
+			this.directorArgs?.repositories.findAll { it.installableUnits.empty })
 		directorArgs.setDelegate(args)
 		directorArgs.setResolveStrategy(Closure.DELEGATE_ONLY)
 		directorArgs.call()
@@ -119,11 +120,9 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	
 	private void mergeDirectorArguments(DirectorArguments otherDirectorArgs) {
 		if (!directorArgs) {
-			// hmmm... maybe should instantiate new args instead, and then call mergeArgumentsFrom(..)
-			directorArgs = otherDirectorArgs
-		} else {
-			directorArgs.merge(otherDirectorArgs)
-		}
+			directorArgs = new DirectorArguments(config, argsFile?.getParent())
+		} 
+		directorArgs.merge(otherDirectorArgs)
 	}
 	
 	DirectorArgumentsAccessor getDirectorArguments() {
@@ -147,6 +146,6 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 			command << " -application org.eclipse.equinox.p2.director"
 			directorArgs.appendArgs(command)
 		}
-		command.toString()
+		return command.toString()
 	}
 }

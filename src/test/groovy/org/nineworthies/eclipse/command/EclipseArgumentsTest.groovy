@@ -115,6 +115,22 @@ class EclipseArgumentsTest {
 	}
 	
 	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasNoUnitsFromRepositoryAndInstallOperationForAllUnits() {
+		
+		def args = EclipseArguments.createFrom {
+			director {
+				destination "/eclipse/install/path"
+				unitsFromRepository ("http://ignored.update/site") { }
+				installUnits()
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+			" -destination /eclipse/install/path"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasNamedRepositoryAndInstallOperationForAllUnits() {
 		
 		def args = EclipseArguments.createFrom {
@@ -159,6 +175,11 @@ class EclipseArgumentsTest {
 		def args = EclipseArguments.createFrom {
 			director {
 				destination "/eclipse/install/path"
+				unitsFromRepository ("http://ignored.update/site") {
+					installableUnit {
+						id "ignored.feature.group"
+					}
+				}
 				install {
 					unitsFromRepository ("http://an.update/site") {
 						installableUnit {
@@ -175,7 +196,7 @@ class EclipseArgumentsTest {
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
 	}
-
+	
 	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasInstallOperationForUnitFromNamedRepository() {
 		
@@ -286,6 +307,27 @@ class EclipseArgumentsTest {
 	}
 	
 	@Test
+	void testCreateFromClosureWithDirectorApplicationThatHasAdditionalRepositoryAndInstallOperationForUnitsFrom() {
+		
+		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
+		def args = EclipseArguments.createFrom {
+			director {
+				destination "/eclipse/install/path"
+				repository "http://another.update/site"
+				install {
+					unitsFrom fromArgsFile.getCanonicalPath()
+				}
+			}
+		}
+		
+		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+			" -destination /eclipse/install/path" +
+			' -repository "http://another.update/site, http://an.update/site"' +
+			" -installIU a.feature.group.from"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
 	void testCreateFromClosureWithDirectorApplicationThatHasUninstallOperationForUnitsFrom() {
 		
 		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
@@ -349,6 +391,30 @@ class EclipseArgumentsTest {
 			director {
 				install {
 					unitsFromRepository ("http://an.update/site") {
+						installableUnit {
+							id "a.feature.group"
+						}
+					}
+				}
+			}
+		}
+
+		def expected = "eclipsec -consolelog -application org.eclipse.equinox.p2.director" +
+			" -destination /eclipse/install/path" +
+			" -repository http://an.update/site" +
+			" -installIU a.feature.group"
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
+	void testCreateFromClosureWithIncludeAndDirectorApplicationThatHasInstallOperationForUnitFromNamedRepository() {
+		
+		def includeArgsFile = new File(getClass().getResource("/include/test_args_director_included.groovy").toURI())
+		def args = EclipseArguments.createFrom {
+			include includeArgsFile.getCanonicalPath()
+			director {
+				install {
+					unitsFromRepositoryNamed ("asite") {
 						installableUnit {
 							id "a.feature.group"
 						}

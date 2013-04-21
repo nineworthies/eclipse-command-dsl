@@ -10,14 +10,11 @@ class InstallArguments extends ConfigurableArguments
 
 	private installableUnits = []
 	
-	InstallArguments(ConfigObject config = null, String basePath = null, RepositoryDelegate repositoryDelegate = null) {
+	InstallArguments(ConfigObject config = null, String basePath = null, 
+		List repositories = null) {
+		
 		super(config)
-		if (repositoryDelegate) {
-			// FIXME should clone the specified delegate!
-			this.repositoryDelegate = repositoryDelegate
-		} else {
-			this.repositoryDelegate = new RepositoryDelegate(config, basePath)
-		}
+		repositoryDelegate = new RepositoryDelegate(config, basePath, repositories)
 	}
 	
 	void unitsFromRepository(

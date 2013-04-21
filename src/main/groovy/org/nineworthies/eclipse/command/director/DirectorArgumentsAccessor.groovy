@@ -6,8 +6,6 @@ interface DirectorArgumentsAccessor {
 	
 	List<RepositoryAccessor> getRepositories()
 	
-	List<InstallableUnitAccessor> getInstallableUnits()
-	
 	// FIXME not strictly an argument?
 	DirectorOperation getOperation()
 }
