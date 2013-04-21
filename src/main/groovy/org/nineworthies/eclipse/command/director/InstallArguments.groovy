@@ -33,8 +33,8 @@ class InstallArguments extends ConfigurableArguments
 		repositoryDelegate.unitsFromRepositoryNamed(name, repositoryArgs)
 	}
 	
-	void unitsFrom(String argsPath) {
-		repositoryDelegate.unitsFrom(argsPath)
+	void unitsFrom(String eclipseArgsPath) {
+		repositoryDelegate.unitsFrom(eclipseArgsPath)
 	}
 	
 	// TODO effectively duplicates Repository.installableUnit(Closure)

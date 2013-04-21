@@ -50,10 +50,10 @@ class RepositoryDelegate extends ConfigurableArguments
 		}
 	}
 
-	void unitsFrom(String argsPath) {
-		def argsFile = new File((String) basePath, argsPath)
-		def args = EclipseArguments.createFrom(argsFile).getDirectorArguments()
-		args.repositories.each { mergeRepository(it) }
+	void unitsFrom(String eclipseArgsPath) {
+		def eclipseArgsFile = new File((String) basePath, eclipseArgsPath)
+		def directorArgs = EclipseArguments.createFrom(eclipseArgsFile).getDirectorArguments()
+		directorArgs.repositories.each { mergeRepository(it) }
 	}
 	
 	void mergeRepository(RepositoryAccessor repository) {

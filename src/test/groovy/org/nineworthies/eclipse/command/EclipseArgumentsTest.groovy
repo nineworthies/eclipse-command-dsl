@@ -82,7 +82,7 @@ class EclipseArgumentsTest {
 		def args = EclipseArguments.createFrom {
 			director {
 				repository "http://an.update/site"
-				list()
+				listUnits()
 			}
 		}
 		

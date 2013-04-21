@@ -38,7 +38,7 @@ contribute(directorScript & ~enclosingClosure()) {
 	method(
 		name: "include",
 		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
-		params: [argsPath: String],
+		params: [eclipseArgsPath: String],
 		noParens: true)
 	method(
 		name: "eclipsec",
@@ -57,7 +57,7 @@ contribute(directorScript & ~enclosingClosure()) {
 	method(
 		name: "director",
 		declaringType: "org.nineworthies.eclipse.command.EclipseArguments",
-		params: [args: Closure])
+		params: [directorArgs: Closure])
 }
 
 contribute(directorScript & directorCall & ~unitsFromRepositoryCall & ~installCall & ~uninstallCall & ~iuCall) {
@@ -76,9 +76,9 @@ contribute(directorScript & directorCall & ~unitsFromRepositoryCall & ~installCa
 	method(
 		name: "repositoryNamed",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler",
-		namedParams: [name: String, url: String])
+		params: [name: String, url: String])
 	method(
-		name: "list",
+		name: "listUnits",
 		declaringType: "org.nineworthies.eclipse.command.director.DirectorArgumentsHandler")
 	method(
 		name: "install",
@@ -113,7 +113,7 @@ contribute(directorScript & (installCall | uninstallCall) & ~unitsFromRepository
 	method(
 		name: "unitsFrom",
 		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsFromArgumentsHandler",
-		params: [argsPath: String],
+		params: [eclipseArgsPath: String],
 		noParens: true)
 }
 
@@ -151,6 +151,6 @@ contribute(directorScript & iuCall) {
 	method(
 		name: "version",
 		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnit",
-		params: [id: String],
+		params: [version: String],
 		noParens: true)
 }

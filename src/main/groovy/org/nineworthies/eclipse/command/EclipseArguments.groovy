@@ -60,13 +60,13 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		mergeConfigFrom(configFile)
 	}
 	
-	void include(String argsPath) {
+	void include(String eclipseArgsPath) {
 		def otherArgs
 		if (argsFile) {
-			def otherArgsFile = new File(argsFile.getParent(), argsPath)
+			def otherArgsFile = new File(argsFile.getParent(), eclipseArgsPath)
 			otherArgs = EclipseArguments.createFrom(otherArgsFile)
 		} else {
-			otherArgs = EclipseArguments.createFrom(argsPath)
+			otherArgs = EclipseArguments.createFrom(eclipseArgsPath)
 		}
 		merge(otherArgs)
 	}

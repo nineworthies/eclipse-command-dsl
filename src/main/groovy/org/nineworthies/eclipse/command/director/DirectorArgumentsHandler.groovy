@@ -16,5 +16,5 @@ interface DirectorArgumentsHandler extends InstallableUnitsFromRepositoryHandler
 	
 	void uninstallUnits()
 	
-	void list()
+	void listUnits()
 }

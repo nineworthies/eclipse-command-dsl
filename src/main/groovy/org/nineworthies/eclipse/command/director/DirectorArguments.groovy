@@ -51,7 +51,7 @@ class DirectorArguments extends ConfigurableArguments
 	}
 	
 	// TODO support list arguments (i.e. iu's, p2 query) 
-	void list() {
+	void listUnits() {
 		operation = new ListOperation();
 	}
 	
