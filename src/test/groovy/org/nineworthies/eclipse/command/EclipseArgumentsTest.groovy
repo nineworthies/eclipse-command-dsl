@@ -13,7 +13,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom { }
 		
-		def expected = "eclipsec"
+		def expected = "eclipse"
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -21,10 +21,10 @@ class EclipseArgumentsTest {
 	void testCreateFromClosureWithNoApplicationAndEclipsecPath() {
 		
 		def args = EclipseArguments.createFrom {
-			eclipsec "C:\\eclipse\\install\\path\\eclipsec"
+			eclipsec "eclipsec"
 		}
 		
-		def expected = "C:\\eclipse\\install\\path\\eclipsec"
+		def expected = "eclipsec"
 		assertEquals(expected, args.asCommand())
 	}
 
@@ -37,7 +37,7 @@ class EclipseArgumentsTest {
 			nosplash()
 		}
 		
-		def expected = "eclipsec -consolelog -debug -nosplash"
+		def expected = "eclipse -consolelog -debug -nosplash"
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -46,7 +46,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				unitsFromRepository ("http://an.update/site") {
 					installableUnit {
 						id "a.feature.group"
@@ -55,7 +55,7 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director"
+		def expected = "eclipse -application org.eclipse.equinox.p2.director"
 		assertEquals(expected, args.asCommand())
 	}
 
@@ -72,7 +72,7 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director"
+		def expected = "eclipse -application org.eclipse.equinox.p2.director"
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -86,7 +86,7 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
 			" -repository http://an.update/site" +
 			" -list"
 		assertEquals(expected, args.asCommand())
@@ -97,7 +97,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				unitsFromRepository ("http://an.update/site") {
 					installableUnit {
 						id "a.feature.group"
@@ -107,8 +107,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -119,14 +119,14 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				unitsFromRepository ("http://ignored.update/site") { }
 				installUnits()
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path"
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path"
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -135,7 +135,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				repositoryNamed "asite", "http://an.update/site"
 				unitsFromRepositoryNamed ("asite") {
 					installableUnit {
@@ -146,8 +146,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -158,7 +158,7 @@ class EclipseArgumentsTest {
 		
 		EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				repositoryNamed "asite", "http://an.update/site"
 				unitsFromRepositoryNamed ("does-not-exist") {
 					installableUnit {
@@ -174,7 +174,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				unitsFromRepository ("http://ignored.update/site") {
 					installableUnit {
 						id "ignored.feature.group"
@@ -190,8 +190,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" + 
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -202,7 +202,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				repositoryNamed "asite", "http://an.update/site"
 				install {
 					unitsFromRepositoryNamed ("asite") {
@@ -214,8 +214,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -226,7 +226,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				uninstall {
 					installableUnit {
 						id "a.feature.group"
@@ -235,8 +235,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -uninstallIU a.feature.group"
 		assertEquals(expected, args.asCommand())
 	}
@@ -246,7 +246,7 @@ class EclipseArgumentsTest {
 		
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				install {
 					unitsFromRepository ("http://an.update/site") {
 						installableUnit {
@@ -260,8 +260,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" + 
 			' -installIU "a.feature.group, another.feature.group"'
 		assertEquals(expected, args.asCommand())
@@ -273,8 +273,8 @@ class EclipseArgumentsTest {
 		def argsFile = new File(getClass().getResource("/test_args_director_install_iu.groovy").toURI())
 		def args = EclipseArguments.createFrom(argsFile)
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -292,15 +292,15 @@ class EclipseArgumentsTest {
 		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				install {
 					unitsFrom fromArgsFile.getCanonicalPath()
 				}
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" + 
 			" -installIU a.feature.group.from"
 		assertEquals(expected, args.asCommand())
@@ -312,7 +312,7 @@ class EclipseArgumentsTest {
 		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				repository "http://another.update/site"
 				install {
 					unitsFrom fromArgsFile.getCanonicalPath()
@@ -320,8 +320,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			' -repository "http://another.update/site, http://an.update/site"' +
 			" -installIU a.feature.group.from"
 		assertEquals(expected, args.asCommand())
@@ -333,15 +333,15 @@ class EclipseArgumentsTest {
 		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				uninstall {
 					unitsFrom fromArgsFile.getCanonicalPath()
 				}
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -uninstallIU a.feature.group.from"
 		assertEquals(expected, args.asCommand())
 	}
@@ -352,7 +352,7 @@ class EclipseArgumentsTest {
 		def fromArgsFile = new File(getClass().getResource("/units/test_args_director_iu.groovy").toURI())
 		def args = EclipseArguments.createFrom {
 			director {
-				destination "/eclipse/install/path"
+				destination "eclipse-install-path"
 				install {
 					unitsFromRepository ("http://another.update/site") {
 						installableUnit {
@@ -364,8 +364,8 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = "eclipsec -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			' -repository "http://another.update/site, http://an.update/site"' +
 			' -installIU "another.feature.group, a.feature.group.from"'
 		assertEquals(expected, args.asCommand())
@@ -399,8 +399,8 @@ class EclipseArgumentsTest {
 			}
 		}
 
-		def expected = "eclipsec -consolelog -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -consolelog -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -423,8 +423,8 @@ class EclipseArgumentsTest {
 			}
 		}
 
-		def expected = "eclipsec -consolelog -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -consolelog -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -436,20 +436,20 @@ class EclipseArgumentsTest {
 		def argsFile = new File(getClass().getResource("/units/test_args_director_install_iu_from.groovy").toURI())
 		def args = EclipseArguments.createFrom(argsFile)
 		
-		def expected = "eclipsec -consolelog -application org.eclipse.equinox.p2.director" +
-			" -destination /eclipse/install/path" +
+		def expected = "eclipse -consolelog -application org.eclipse.equinox.p2.director" +
+			" -destination eclipse-install-path" +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group.from"
 		assertEquals(expected, args.asCommand())
 	}
 	
 	@Test
-	void testCreateFromClosureAndAssertCorrectQuoting() {
+	void testCreateFromClosureAndAssertQuotingForEclipsecAndDestination() {
 		
 		def args = EclipseArguments.createFrom {
-			eclipsec "C:\\Program Files\\Eclipse\\eclipsec"
+			eclipsec "eclipse install path/eclipse"
 			director {
-				destination "C:\\Program Files\\Eclipse"
+				destination "eclipse install path"
 				install {
 					unitsFromRepository ("http://an.update/site") {
 						installableUnit {
@@ -460,8 +460,9 @@ class EclipseArgumentsTest {
 			}
 		}
 		
-		def expected = '"C:\\Program Files\\Eclipse\\eclipsec" -application org.eclipse.equinox.p2.director' +
-			' -destination "C:\\Program Files\\Eclipse"' +
+		def expected = /"eclipse install path${File.separator}eclipse"/.toString() + 
+			" -application org.eclipse.equinox.p2.director" +
+			' -destination "eclipse install path"' +
 			" -repository http://an.update/site" +
 			" -installIU a.feature.group"
 		assertEquals(expected, args.asCommand())
@@ -473,10 +474,10 @@ class EclipseArgumentsTest {
 		def configFile = new File(getClass().getResource("/test_config.properties").toURI())
 		def args = EclipseArguments.createFrom {
 			configFrom configFile.getCanonicalPath()
-			eclipsec "$eclipse.command"
+			eclipsec "$eclipse.home/eclipsec"
 		}
 		
-		def expected = "C:\\my\\eclipse\\path\\eclipsec"
+		def expected = "${File.separator}my-eclipse-path${File.separator}eclipsec".toString()
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -486,7 +487,7 @@ class EclipseArgumentsTest {
 		def argsFile = new File(getClass().getResource("/test_args_config.groovy").toURI())
 		def args = EclipseArguments.createFrom(argsFile)
 		
-		def expected = "C:\\my\\eclipse\\path\\eclipsec"
+		def expected = "${File.separator}my-eclipse-path${File.separator}eclipsec".toString()
 		assertEquals(expected, args.asCommand())
 	}
 }

@@ -7,7 +7,7 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 
 	private File argsFile
 	
-	private File eclipsec = new File("eclipsec")
+	private File eclipsec = new File("eclipse")
 	
 	private boolean nosplash
 	

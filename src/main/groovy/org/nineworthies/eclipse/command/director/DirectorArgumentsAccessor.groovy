@@ -2,7 +2,7 @@ package org.nineworthies.eclipse.command.director
 
 interface DirectorArgumentsAccessor {
 
-	String getDestination()
+	File getDestination()
 	
 	List<RepositoryAccessor> getRepositories()
 	

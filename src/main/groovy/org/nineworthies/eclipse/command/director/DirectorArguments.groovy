@@ -7,7 +7,7 @@ class DirectorArguments extends ConfigurableArguments
 	
 	final String basePath
 	
-	private String destination
+	private File destination
 	
 	// FIXME can't use @Delegate with Eclipse until https://jira.codehaus.org/browse/GRECLIPSE-331 is fixed 
 	private RepositoryDelegate repositoryDelegate
@@ -23,7 +23,7 @@ class DirectorArguments extends ConfigurableArguments
 	}
 	
 	void destination(String path) {
-		destination = path
+		destination = new File(path)
 	}
 	
 	void repository(String url) {
@@ -103,7 +103,7 @@ class DirectorArguments extends ConfigurableArguments
 		operation?.appendArgs(command, this)
 	}
 	
-	String getDestination() {
+	File getDestination() {
 		return destination
 	}
 	

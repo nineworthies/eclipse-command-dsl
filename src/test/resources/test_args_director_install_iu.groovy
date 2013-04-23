@@ -1,5 +1,5 @@
 director {
-	destination "/eclipse/install/path"
+	destination "eclipse-install-path"
 	install {
 		unitsFromRepository ("http://an.update/site") {
 			installableUnit {
