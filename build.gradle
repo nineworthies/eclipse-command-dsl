@@ -18,4 +18,5 @@ mainClassName = "org.nineworthies.eclipse.command.EclipseCommand"
 applicationDistribution.from("src/main/scripts") {
 	include "eclipse-command-dsl.groovy"
 	into "bin"
+	fileMode = 0755
 }
