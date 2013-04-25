@@ -10,6 +10,8 @@ def enclosedBy(String name) {
 // until https://jira.codehaus.org/browse/GRECLIPSE-1609 is fixed
 def directorScript = enclosingScript() & sourceFolderOfCurrentFile("src/main/scripts")
 
+// have to use negation ('~') where appropriate for these xxxCall pointcuts
+// until http://jira.codehaus.org/browse/GRECLIPSE-1323 is fixed
 def directorCall = enclosedBy("director")
 
 def unitsFromRepositoryCall = enclosedBy("unitsFromRepository") | enclosedBy("unitsFromRepositoryNamed")
@@ -108,8 +110,8 @@ contribute(directorScript & (directorCall | installCall) & ~uninstallCall & ~uni
 		params: [name: String, repositoryArgs: Closure])
 }
 
-contribute(directorScript & (installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall) {
-	log "contribution for pointcut '(installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall'"
+contribute(directorScript & (directorCall | installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall) {
+	log "contribution for pointcut '(directorCall | installCall | uninstallCall) & ~unitsFromRepositoryCall & ~iuCall'"
 	method(
 		name: "unitsFrom",
 		declaringType: "org.nineworthies.eclipse.command.director.InstallableUnitsFromArgumentsHandler",

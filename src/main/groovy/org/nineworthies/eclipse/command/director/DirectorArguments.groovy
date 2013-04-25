@@ -50,6 +50,10 @@ class DirectorArguments extends ConfigurableArguments
 		repositoryDelegate.unitsFromRepositoryNamed(name, repositoryArgs)
 	}
 	
+	void unitsFrom(String eclipseArgsPath) {
+		repositoryDelegate.unitsFrom(eclipseArgsPath)
+	}
+	
 	// TODO support list arguments (i.e. iu's, p2 query) 
 	void listUnits() {
 		operation = new ListOperation();
