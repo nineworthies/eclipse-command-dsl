@@ -6,7 +6,7 @@ import groovy.transform.TupleConstructor
 import org.nineworthies.eclipse.command.ConfigurableArguments
 
 @TupleConstructor(callSuper = true, includeSuperProperties = true)
-@ToString(includePackage = false)
+@ToString(includePackage = false, ignoreNulls = true)
 class Repository extends ConfigurableArguments 
 	implements InstallableUnitsHandler, RepositoryAccessor {
 

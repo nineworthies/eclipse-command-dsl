@@ -2,7 +2,7 @@ package org.nineworthies.eclipse.command.director
 
 import groovy.transform.ToString
 
-@ToString(includeFields = true, includePackage = false)
+@ToString(includeFields = true, includePackage = false, ignoreNulls = true)
 class InstallableUnit implements InstallableUnitAccessor {
 
 	private String id
