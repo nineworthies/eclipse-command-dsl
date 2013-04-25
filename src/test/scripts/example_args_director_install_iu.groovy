@@ -1,12 +1,10 @@
-eclipsec "C:\\Program Files\\Eclipse\\eclipsec"
-
+include "include/example_args_director_included.groovy"
 director {
-	destination "C:\\Program Files\\Eclipse"
-	repository "http://an.update/site"
 	install {
-		installableUnit {
-			id "a.feature.group"
+		unitsFromRepository("http://an.update/site") {
+			installableUnit {
+				id "a.feature.group"
+			}
 		}
 	}
 }
-

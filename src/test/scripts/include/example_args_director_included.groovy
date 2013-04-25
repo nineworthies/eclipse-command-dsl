@@ -1,5 +1,5 @@
-eclipsec "C:\\Program Files\\Eclipse Test\\eclipsec"
-
+configFrom "../../config/example.properties"
+eclipsec "$eclipse.command"
 director {
-	destination "C:\\Program Files\\Eclipse Test"
+	destination "$eclipse.home"
 }
