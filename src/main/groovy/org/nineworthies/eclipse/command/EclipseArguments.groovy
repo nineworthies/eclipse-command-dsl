@@ -5,9 +5,11 @@ import org.nineworthies.eclipse.command.director.DirectorArgumentsAccessor
 
 class EclipseArguments extends ConfigurableArguments implements EclipseArgumentsAccessor {
 
+	private static final String ECLIPSE_COMMAND = "eclipse"
+
 	private File argsFile
 	
-	private File eclipsec = new File("eclipse")
+	private File eclipsec = new File(ECLIPSE_COMMAND)
 	
 	private boolean nosplash
 	
@@ -103,7 +105,7 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	void merge(EclipseArguments otherArgs) {
 		// FIXME use public access (EclipseArgumentsAccessor) not private!
 		config.merge(otherArgs.config)
-		if (otherArgs.eclipsec && !otherArgs.eclipsec.path.equals("eclipsec")) {
+		if (otherArgs.eclipsec && !otherArgs.eclipsec.path.equals(ECLIPSE_COMMAND)) {
 			eclipsec = otherArgs.eclipsec
 		}
 		if (otherArgs.consolelog) {
@@ -119,10 +121,12 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	}
 	
 	private void mergeDirectorArguments(DirectorArguments otherDirectorArgs) {
-		if (!directorArgs) {
-			directorArgs = new DirectorArguments(config, argsFile?.getParent())
-		} 
-		directorArgs.merge(otherDirectorArgs)
+		if (otherDirectorArgs) {
+			if (!directorArgs) {
+				directorArgs = new DirectorArguments(config, argsFile?.getParent())
+			}
+			directorArgs.merge(otherDirectorArgs)
+		}
 	}
 	
 	DirectorArgumentsAccessor getDirectorArguments() {

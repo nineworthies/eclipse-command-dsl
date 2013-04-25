@@ -474,10 +474,10 @@ class EclipseArgumentsTest {
 		def configFile = new File(getClass().getResource("/test_config.properties").toURI())
 		def args = EclipseArguments.createFrom {
 			configFrom configFile.getCanonicalPath()
-			eclipsec "$eclipse.home/eclipsec"
+			eclipsec "$eclipse.command"
 		}
 		
-		def expected = "${File.separator}my-eclipse-path${File.separator}eclipsec".toString()
+		def expected = "eclipsec".toString()
 		assertEquals(expected, args.asCommand())
 	}
 	
@@ -487,7 +487,19 @@ class EclipseArgumentsTest {
 		def argsFile = new File(getClass().getResource("/test_args_config.groovy").toURI())
 		def args = EclipseArguments.createFrom(argsFile)
 		
-		def expected = "${File.separator}my-eclipse-path${File.separator}eclipsec".toString()
+		def expected = "eclipsec".toString()
+		assertEquals(expected, args.asCommand())
+	}
+	
+	@Test
+	void testCreateFromClosureWithIncludeThatHasConfig() {
+		
+		def includeArgsFile = new File(getClass().getResource("/test_args_config.groovy").toURI())
+		def args = EclipseArguments.createFrom {
+			include includeArgsFile.getCanonicalPath()
+		}
+		
+		def expected = "eclipsec".toString()
 		assertEquals(expected, args.asCommand())
 	}
 }

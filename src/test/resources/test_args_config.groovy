@@ -1,2 +1,2 @@
 configFrom "test_config.properties"
-eclipsec "$eclipse.home/eclipsec"
+eclipsec "$eclipse.command"
