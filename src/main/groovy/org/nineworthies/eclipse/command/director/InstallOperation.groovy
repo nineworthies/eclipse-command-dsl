@@ -17,7 +17,7 @@ class InstallOperation extends DirectorOperation {
 		
 		def repositories = this.useDirectorRepositories ? directorArgs.repositories : this.repositories
 		def units = (repositories*.installableUnits).flatten()
-		println("installing $units from $repositories to '$directorArgs.destination'")
+		println "Installing $units from $repositories to '$directorArgs.destination'"
 		if (directorArgs.destination) {
 			appendDestination(command, directorArgs.destination)
 		}

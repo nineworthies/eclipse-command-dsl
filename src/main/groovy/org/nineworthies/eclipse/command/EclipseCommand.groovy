@@ -16,8 +16,8 @@ class EclipseCommand {
 
 		def cli = new CliBuilder(usage: "$callingType -s [-m <args>] [argspath]")
 		cli.with {
-			s "show the command"
-			m args: 1, argName: "args", "command arguments"
+			s "Show the command"
+			m args: 1, argName: "args", "Command arguments"
 		}
 		def opts = cli.parse(args)
 		if (!opts) {
@@ -50,7 +50,7 @@ class EclipseCommand {
 
 		def command = new EclipseCommand(eclipseArgs)
 		if (opts.s) {
-			println "command to exec would be '${command.show()}'"
+			println "Eclipse command to exec would be '${command.show()}'"
 		} else {
 			command.exec()
 		}
@@ -73,9 +73,8 @@ class EclipseCommand {
 	
 	void exec() {
 		def command = eclipseArgs.asCommand()
-//		println "command to exec is '$command'"
 		def process = command.execute()
 		process.waitForProcessOutput(System.out, System.err)
-		println "command return code: ${process.exitValue()}"
+		println "Eclipse command exited with value ${process.exitValue()}."
 	}
 }

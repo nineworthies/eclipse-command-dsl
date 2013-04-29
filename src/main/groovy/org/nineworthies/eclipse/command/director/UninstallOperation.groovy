@@ -12,7 +12,7 @@ class UninstallOperation extends DirectorOperation {
 	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		
 		def units = this.useDirectorUnits ? directorArgs.installableUnits : this.installableUnits
-		println("uninstalling $units from '$directorArgs.destination'")
+		println "Uninstalling $units from '$directorArgs.destination'"
 		if (directorArgs.destination) {
 			appendDestination(command, directorArgs.destination)
 		}
