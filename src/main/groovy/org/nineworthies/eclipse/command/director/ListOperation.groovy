@@ -5,11 +5,11 @@ import groovy.transform.Immutable
 @Immutable
 class ListOperation extends DirectorOperation {
 
-	void appendArgs(Appendable command, DirectorArgumentsAccessor directorArgs) {
+	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		println("listing units in $directorArgs.repositories")
 		if (directorArgs.repositories) {
 			appendRepositories(command, directorArgs.repositories)
 		}
-		command << " -list"
+		command << "-list"
 	}
 }

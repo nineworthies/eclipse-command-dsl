@@ -9,15 +9,15 @@ class UninstallOperation extends DirectorOperation {
 	
 	final List<InstallableUnitAccessor> installableUnits = []
 
-	void appendArgs(Appendable command, DirectorArgumentsAccessor directorArgs) {
+	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		
 		def units = this.useDirectorUnits ? directorArgs.installableUnits : this.installableUnits
 		println("uninstalling $units from '$directorArgs.destination'")
 		if (directorArgs.destination) {
 			appendDestination(command, directorArgs.destination)
 		}
-		units.eachWithIndex { unit, index ->
-			command << (index > 0 ? ", $unit.id" : " -uninstallIU $unit.id")
+		if (units) {
+			command << "-uninstallIU" << units.collect { it.id }.join(", ")
 		}
 	}
 }

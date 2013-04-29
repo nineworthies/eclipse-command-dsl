@@ -2,22 +2,13 @@ package org.nineworthies.eclipse.command.director
 
 abstract class DirectorOperation {
 	
-	protected void appendDestination(Appendable command, File destination) {
-		command << " -destination"
-		command << (destination.path.contains(" ") ? / "$destination"/ : " $destination")
+	protected void appendDestination(List command, File destination) {
+		command << "-destination" << destination.path
 	}
 	
-	protected void appendRepositories(Appendable command, List<RepositoryAccessor> repositories) {
-		repositories.each { repo ->
-			if (repo == repositories.first()) {
-				command << (repositories.size() > 1 ? / -repository "$repo.url/ : " -repository $repo.url")
-			} else if (repo == repositories.last()) {
-				command << (repositories.size() > 1 ? /, $repo.url"/ : ", $repo.url")
-			} else {
-				command << ", $repo.url"
-			}
-		}
+	protected void appendRepositories(List command, List<RepositoryAccessor> repositories) {
+		command << "-repository" << repositories*.url.join(", ")
 	}
 	
-	abstract void appendArgs(Appendable command, DirectorArgumentsAccessor directorArgs)
+	abstract void appendArgs(List command, DirectorArgumentsAccessor directorArgs)
 }

@@ -133,23 +133,23 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		return directorArgs
 	}
 	
-	String asCommand() {
-		def command = new StringBuilder()
-		command << (eclipsec.path.contains(" ") ? /"$eclipsec"/ : "$eclipsec")
+	List asCommand() {
+		def command = []
+		command << eclipsec.path
 		if (consolelog) {
-			command << " -consolelog"
+			command << "-consolelog"
 		}
 		if (debug) {
-			command << " -debug"
+			command << "-debug"
 		}
 		if (nosplash) {
-			command << " -nosplash"
+			command << "-nosplash"
 		}
 		// now delegate to 'application'
 		if (directorArgs) {
-			command << " -application org.eclipse.equinox.p2.director"
+			command << "-application" << "org.eclipse.equinox.p2.director"
 			directorArgs.appendArgs(command)
 		}
-		return command.toString()
+		return command
 	}
 }

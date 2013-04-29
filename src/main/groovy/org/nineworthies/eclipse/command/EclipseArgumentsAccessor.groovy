@@ -4,5 +4,5 @@ import org.nineworthies.eclipse.command.director.DirectorArgumentsAccessor
 
 interface EclipseArgumentsAccessor {
 	
-	String asCommand()
+	List asCommand()
 }

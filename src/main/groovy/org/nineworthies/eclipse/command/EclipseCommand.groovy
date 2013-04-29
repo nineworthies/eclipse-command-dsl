@@ -50,20 +50,30 @@ class EclipseCommand {
 
 		def command = new EclipseCommand(eclipseArgs)
 		if (opts.s) {
-			command.show()
+			println "command to exec would be '${command.show()}'"
 		} else {
 			command.exec()
 		}
 	}
 
-	void show() {
-		def command = eclipseArgs.asCommand()
-		println "command to exec would be '$command'"
+	def show() {
+		def command = new StringBuilder()
+		eclipseArgs.asCommand().eachWithIndex { arg, index ->
+			if (index > 0) { 
+				command << " "
+			}
+			if (arg.contains(" ")) {
+				command << /"$arg"/
+			} else {
+				command << "$arg"
+			}
+		}
+		return command.toString()
 	}
-		
+	
 	void exec() {
 		def command = eclipseArgs.asCommand()
-		println "command to exec is '$command'"
+//		println "command to exec is '$command'"
 		def process = command.execute()
 		process.waitForProcessOutput(System.out, System.err)
 		println "command return code: ${process.exitValue()}"

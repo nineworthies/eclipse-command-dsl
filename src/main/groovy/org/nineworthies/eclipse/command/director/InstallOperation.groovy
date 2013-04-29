@@ -13,7 +13,7 @@ class InstallOperation extends DirectorOperation {
 	// class 'xxx' to class 'java.util.HashMap'
 	final List<RepositoryAccessor> repositories = []
 	
-	void appendArgs(Appendable command, DirectorArgumentsAccessor directorArgs) {
+	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		
 		def repositories = this.useDirectorRepositories ? directorArgs.repositories : this.repositories
 		def units = (repositories*.installableUnits).flatten()
@@ -24,14 +24,8 @@ class InstallOperation extends DirectorOperation {
 		if (repositories) {
 			appendRepositories(command, repositories)
 		}
-		units.each { unit ->
-			if (unit == units.first()) {
-				command << (units.size() > 1 ? / -installIU "$unit.id/ : " -installIU $unit.id")
-			} else if (unit == units.last()) {
-				command << (units.size() > 1 ? /, $unit.id"/ : ", $unit.id")
-			} else {
-				command << ", $unit.id"
-			}
+		if (units) {
+			command << "-installIU" << units.collect { it.id }.join(", ")
 		}
 	}
 }

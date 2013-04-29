@@ -103,7 +103,7 @@ class DirectorArguments extends ConfigurableArguments
 		}
 	}
 	
-	void appendArgs(Appendable command) {
+	void appendArgs(List command) {
 		operation?.appendArgs(command, this)
 	}
 	
