@@ -14,7 +14,7 @@ class EclipseCommand {
 	
 	static void exec(String[] args, String callingType = "EclipseCommand") {
 
-		def cli = new CliBuilder(usage: "$callingType -s [-m <args>] [argspath]")
+		def cli = new CliBuilder(usage: "$callingType -s [-m <args>] [argspath]..")
 		cli.with {
 			s "Show the command"
 			m args: 1, argName: "args", "Command arguments"
@@ -28,7 +28,7 @@ class EclipseCommand {
 			System.exit(0)
 		}
 		
-		def eclipseArgs
+		def eclipseArgs = new EclipseArguments()
 		if (opts.arguments()) {
 			def invalidOpts = opts.arguments().findAll {
 				it.startsWith("-")
@@ -37,15 +37,13 @@ class EclipseCommand {
 				cli.usage()
 				System.exit(0)
 			}
-			// FIXME second or subsequent arg files are ignored for now...
-			eclipseArgs = EclipseArguments.createFrom(opts.arguments().first())
-			if (opts.m) {
-				Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
-				eclipseArgs.merge(EclipseArguments.createFrom(otherArgs))
+			opts.arguments().each {
+				eclipseArgs.merge(EclipseArguments.createFrom(it))
 			}
-		} else {
+		}
+		if (opts.m) {
 			Closure otherArgs = new GroovyShell().evaluate("{->$opts.m}")
-			eclipseArgs = EclipseArguments.createFrom(otherArgs)
+			eclipseArgs.merge(EclipseArguments.createFrom(otherArgs))
 		}
 
 		def command = new EclipseCommand(eclipseArgs)
