@@ -10,7 +10,7 @@ class EclipseCommandTest {
 	@Test
 	void testExecCommandWithArgumentsThatHaveShowOption() {
 		
-		def command = EclipseCommand.exec("-s -m '{eclipsec 'eclipse-install-path/eclipsec'}'")
+		def command = EclipseCommand.invoke("-s -m '{eclipsec 'eclipse-install-path/eclipsec'}'")
 		// TODO assert show() was called on command
 	}
 	

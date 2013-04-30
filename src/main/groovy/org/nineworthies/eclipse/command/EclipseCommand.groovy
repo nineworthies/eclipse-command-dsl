@@ -9,10 +9,10 @@ class EclipseCommand {
 	final EclipseArgumentsAccessor eclipseArgs;
 	
 	static void main(String[] args) {
-		exec(args)
+		invoke(args)
 	}
 	
-	static void exec(String[] args, String callingType = "EclipseCommand") {
+	static void invoke(String[] args, String callingType = "EclipseCommand") {
 
 		def cli = new CliBuilder(usage: "$callingType -s [-m <args>] [argspath]..")
 		cli.with {
