@@ -6,7 +6,7 @@ abstract class DirectorOperation {
 		command << "-destination" << destination.path
 	}
 	
-	protected void appendRepositories(List command, List<RepositoryAccessor> repositories) {
+	protected void appendRepositories(List command, List repositories) {
 		command << "-repository" << repositories*.url.join(", ")
 	}
 	

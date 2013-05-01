@@ -7,7 +7,7 @@ class UninstallOperation extends DirectorOperation {
 
 	final boolean useDirectorUnits
 	
-	final List<InstallableUnitAccessor> installableUnits = []
+	final List installableUnits = []
 
 	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		

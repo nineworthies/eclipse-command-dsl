@@ -11,7 +11,7 @@ class InstallOperation extends DirectorOperation {
 	// the following error was seen at runtime:
 	// GroovyCastException: Cannot cast object 'xxx' with 
 	// class 'xxx' to class 'java.util.HashMap'
-	final List<RepositoryAccessor> repositories = []
+	final List repositories = []
 	
 	void appendArgs(List command, DirectorArgumentsAccessor directorArgs) {
 		

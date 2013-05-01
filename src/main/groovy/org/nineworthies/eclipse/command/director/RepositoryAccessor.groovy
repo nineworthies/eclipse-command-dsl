@@ -6,5 +6,5 @@ interface RepositoryAccessor {
 	
 	String getName()
 	
-	List<InstallableUnitAccessor> getInstallableUnits()
+	List getInstallableUnits()
 }

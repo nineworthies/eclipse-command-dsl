@@ -31,7 +31,7 @@ class Repository extends ConfigurableArguments
 		installableUnits.addAll(otherRepository.getInstallableUnits())
 	}
 	
-	List<InstallableUnitAccessor> getInstallableUnits() {
+	List getInstallableUnits() {
 		return installableUnits.asImmutable()
 	}
 }

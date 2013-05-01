@@ -111,7 +111,7 @@ class DirectorArguments extends ConfigurableArguments
 		return destination
 	}
 	
-	List<RepositoryAccessor> getRepositories() {
+	List getRepositories() {
 		return repositoryDelegate.repositories
 	}
 	

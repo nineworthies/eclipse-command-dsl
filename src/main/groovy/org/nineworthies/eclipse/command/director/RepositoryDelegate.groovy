@@ -68,11 +68,11 @@ class RepositoryDelegate extends ConfigurableArguments
 		}
 	}
 	
-	List<RepositoryAccessor> getRepositories() {
+	List getRepositories() {
 		return urlToRepositoryMapping.values().toList().asImmutable()
 	}
 	
-	List<InstallableUnitAccessor> getInstallableUnits() {
+	List getInstallableUnits() {
 		def installableUnits = []
 		urlToRepositoryMapping.values().each {
 			installableUnits.addAll(it.installableUnits)

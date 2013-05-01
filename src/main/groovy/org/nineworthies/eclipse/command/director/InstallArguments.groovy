@@ -50,11 +50,11 @@ class InstallArguments extends ConfigurableArguments
 		installableUnits.add(installableUnit)
 	}
 	
-	List<RepositoryAccessor> getRepositories() {
+	List getRepositories() {
 		return repositoryDelegate.repositories
 	}
 	
-	List<InstallableUnitAccessor> getInstallableUnits() {
+	List getInstallableUnits() {
 		def installableUnits = []
 		installableUnits.addAll(this.installableUnits)
 		installableUnits.addAll(repositoryDelegate.installableUnits)
