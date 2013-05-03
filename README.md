@@ -45,7 +45,7 @@ Optional Requirements
 Installation
 ------------
 
- - Download the binary distribution archive: http://where/is/it
+ - Download the binary distribution archive (n.b. currently this is only a recent snapshot, as yet there are no released versions): http://nineworthies-public-repo.s3-website-eu-west-1.amazonaws.com/snapshot/org/nineworthies/eclipse/eclipse-command-dsl/0.1.0-SNAPSHOT/eclipse-command-dsl-0.1.0-20130503.124946-6.zip
  - Extract the archive to a local directory
  - Add the 'bin' directory to the PATH
  - Confirm a successful installation by invoking the following command: 
