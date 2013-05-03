@@ -5,6 +5,14 @@ apply plugin: "application"
 version = "0.1.0-SNAPSHOT"
 group = "org.nineworthies.eclipse"
 
+configurations {
+	deployerJars
+}
+
+artifacts {
+	archives distZip
+}
+
 repositories {
 	mavenCentral()
 }
@@ -12,6 +20,26 @@ repositories {
 dependencies {
 	compile "org.codehaus.groovy:groovy:2.1.1", "commons-cli:commons-cli:1.2"
 	testCompile "org.codehaus.groovy:groovy-test:2.1.1", "junit:junit:4.11"
+	deployerJars "org.springframework.build:aws-maven:4.4.0.RELEASE"
+}
+
+uploadArchives {
+	repositories.mavenDeployer {
+		configuration = configurations.deployerJars
+		def s3credentials = [:]
+		if (System.env.AWS_ACCESS_KEY_ID) {
+			s3credentials["userName"] = System.env.AWS_ACCESS_KEY_ID
+		}
+		if (System.env.AWS_SECRET_KEY) {
+			s3credentials["passphrase"] = System.env.AWS_SECRET_KEY
+		}
+		snapshotRepository(url: "s3://nineworthies-public-repo/snapshot") {
+			authentication(s3credentials)
+		}
+		repository(url: "s3://nineworthies-public-repo/release") {
+			authentication(s3credentials)
+		}
+	}
 }
 
 mainClassName = "org.nineworthies.eclipse.command.EclipseCommand"
