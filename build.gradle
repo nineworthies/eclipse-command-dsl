@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-	compile "org.codehaus.groovy:groovy-all:2.1.1", "commons-cli:commons-cli:1.2"
-	testCompile "junit:junit:4.11"
+	compile "org.codehaus.groovy:groovy:2.1.1", "commons-cli:commons-cli:1.2"
+	testCompile "org.codehaus.groovy:groovy-test:2.1.1", "junit:junit:4.11"
 }
 
 mainClassName = "org.nineworthies.eclipse.command.EclipseCommand"
