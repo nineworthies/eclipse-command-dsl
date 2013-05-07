@@ -40,7 +40,7 @@ director {
 
 ##Installation
 
- - Download the runtime zip distribution of the latest version from the public repository: http://nineworthies-public-repo.s3-website-eu-west-1.amazonaws.com/?prefix=release/org/nineworthies/eclipse/eclipse-command-dsl/
+ - Download the runtime zip distribution of the latest version from the [public repository](http://nineworthies-public-repo.s3-website-eu-west-1.amazonaws.com/?prefix=release/org/nineworthies/eclipse/eclipse-command-dsl/)
  - Extract the zip archive to a local directory
  - Add the 'bin' directory to the PATH
  - Confirm a successful installation by invoking the following command:
