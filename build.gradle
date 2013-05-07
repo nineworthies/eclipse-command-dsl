@@ -1,8 +1,8 @@
 apply plugin: "groovy"
 apply plugin: "maven"
 apply plugin: "application"
+apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
-version = "0.1.0-SNAPSHOT"
 group = "org.nineworthies.eclipse"
 
 configurations {
@@ -22,6 +22,8 @@ dependencies {
 	testCompile "org.codehaus.groovy:groovy-test:2.1.1", "junit:junit:4.11"
 	deployerJars "org.springframework.build:aws-maven:4.4.0.RELEASE"
 }
+
+createReleaseTag.dependsOn uploadArchives
 
 uploadArchives {
 	repositories.mavenDeployer {
