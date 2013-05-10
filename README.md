@@ -28,18 +28,14 @@ director {
  - Command scripts are easy to create in Eclipse, with auto completion and documented arguments corresponding to the Eclipse command line
  - Command scripts are easy to read and provide a form of documentation in addition to being executable 
 
-##Runtime System Requirements
+##System Requirements
 
  - Java 1.6+
  - Eclipse 4.2+ (either the basic platform, or any other bundle that includes the Eclipse command line client)
 
-##Optional Runtime Requirements
+##Optional Requirements
 
  - Groovy 2.1.0+ (to run the included Groovy script wrapper, instead of the bat or shell script wrappers)
-
-##Development System Requirements
-
- - Groovy 2.1.0+
  - Groovy Eclipse 2.8.0+, Gradle Eclipse 3.2.0+ (to create command scripts using Eclipse auto completion)
 
 ##Installation
