@@ -30,7 +30,7 @@ director {
 
 ##System Requirements
 
- - Java 1.5+
+ - Java 1.6+
  - Eclipse 4.2+ (either the basic platform, or any other bundle that includes the Eclipse command line client)
 
 ##Optional Requirements
@@ -140,3 +140,7 @@ To ask questions or report bugs, please use the GitHub project.
 * Project page: [http://github.com/nineworthies/eclipse-command-dsl](http://github.com/nineworthies/eclipse-command-dsl)
 * Asking questions: [http://github.com/nineworthies/eclipse-command-dsl/issues](http://github.com/nineworthies/eclipse-command-dsl/issues)
 * Reporting bugs: [http://github.com/nineworthies/eclipse-command-dsl/issues](http://github.com/nineworthies/eclipse-command-dsl/issues)
+
+## Copyright
+Copyright 2013 Nineworthies Technology Ltd.
+
