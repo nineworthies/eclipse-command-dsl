@@ -55,7 +55,7 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 		
 		def configFile
 		if (argsFile) {
-			configFile = new File(argsFile.parent, configPath)
+			configFile = new File((String) argsFile.parent, configPath)
 		} else {
 			configFile = new File(configPath)
 		}
@@ -65,7 +65,7 @@ class EclipseArguments extends ConfigurableArguments implements EclipseArguments
 	void include(String eclipseArgsPath) {
 		def otherArgs
 		if (argsFile) {
-			def otherArgsFile = new File(argsFile.getParent(), eclipseArgsPath)
+			def otherArgsFile = new File((String) argsFile.parent, eclipseArgsPath)
 			otherArgs = EclipseArguments.createFrom(otherArgsFile)
 		} else {
 			otherArgs = EclipseArguments.createFrom(eclipseArgsPath)
