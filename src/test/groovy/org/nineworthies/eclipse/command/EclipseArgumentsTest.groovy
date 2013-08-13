@@ -457,7 +457,7 @@ class EclipseArgumentsTest {
 	@Test
 	void testCreateFromFileWithIncludeAndDirectorApplicationThatHasInstallOperationForUnitsFrom() {
 		
-		def argsFile = new File(getClass().getResource("/units/test_args_director_install_iu_from.groovy").toURI())
+		def argsFile = new File(getClass().getResource("/test_args_director_install_iu_from.groovy").toURI())
 		def args = EclipseArguments.createFrom(argsFile)
 		
 		def expected = ["eclipse", "-consolelog", "-application", "org.eclipse.equinox.p2.director",
