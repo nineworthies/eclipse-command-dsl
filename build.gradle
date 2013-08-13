@@ -20,7 +20,7 @@ repositories {
 dependencies {
 	compile "org.codehaus.groovy:groovy:2.1.1", "commons-cli:commons-cli:1.2"
 	testCompile "org.codehaus.groovy:groovy-test:2.1.1", "junit:junit:4.11"
-	deployerJars "org.springframework.build:aws-maven:4.4.0.RELEASE"
+	deployerJars "org.springframework.build:aws-maven:4.8.0.RELEASE"
 }
 
 createReleaseTag.dependsOn uploadArchives
